@@ -1,6 +1,6 @@
 #pragma once
-#include "Vector2D.h"
-#include "Object.h"
+#include "Object.hpp"
+#include "Vector2D.hpp"
 
 class Rectangle : public Object {
 public:

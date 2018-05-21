@@ -15,7 +15,7 @@ Simulation::Simulation(sf::VideoMode vm, bool full_screen) : video_mode(vm), ful
 	ball_tool->setBallsBounceFactor(1);
 	rectangle_tool = new RectangleTool(environment);
 	line_tool = new LineTool(environment);
-	current_tool = ball_tool; 
+	current_tool = ball_tool;
 
 	font.loadFromFile("fonts\\Roboto\\Roboto-Light.ttf");
 	ball_texture.loadFromFile("textures\\ball.png");
@@ -41,7 +41,7 @@ void Simulation::process() {
 	renderer.setView(view);
 	while (renderer.isOpen())
 	{
-		
+
 		sf::Event event;
 		while (renderer.pollEvent(event)) //event loop
 		{
@@ -61,7 +61,7 @@ void Simulation::process() {
 				current_tool->update(event, renderer);
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Middle)) {
 					view.move((prev_mouse_move.x - event.mouseMove.x)*scale,
-							(prev_mouse_move.y - event.mouseMove.y)*scale);
+						(prev_mouse_move.y - event.mouseMove.y)*scale);
 					renderer.setView(view);
 				}
 				prev_mouse_move = event.mouseMove;
@@ -81,55 +81,77 @@ void Simulation::process() {
 				break;
 			case sf::Event::KeyPressed:
 				switch (event.key.code) {
-				case sf::Keyboard::Up:
+				case sf::Keyboard::Up: // move camera up
 					view.move(0, -20);
 					renderer.setView(view);
 					break;
-				case sf::Keyboard::Down:
+
+				case sf::Keyboard::Down: // move camera down
 					view.move(0, 20);
 					renderer.setView(view);
 					break;
-				case sf::Keyboard::Left:
+
+				case sf::Keyboard::Left: // move camera left
 					view.move(-20, 0);
 					renderer.setView(view);
 					break;
-				case sf::Keyboard::Right:
+
+				case sf::Keyboard::Right: // move camera right
 					view.move(20, 0);
 					renderer.setView(view);
-					break;				
-				case sf::Keyboard::Escape:
+					break;
+
+				case sf::Keyboard::Escape: // exit 
 					quit = true;
-				case sf::Keyboard::F5:
+					break;
+
+				case sf::Keyboard::F5: // quick save
 					saveSimState(quick_save_path);
 					break;
-				case sf::Keyboard::F7:
+
+				case sf::Keyboard::F7: // quick load
 					loadSimState(quick_save_path);
 					break;
+
+				case sf::Keyboard::D: // enable / disable debug printing
+					paused = !paused;
+					break;
+
+				case sf::Keyboard::P: // pause
+					paused = !paused;
+					break;
+
+				case sf::Keyboard::C: // enable / disable collisions
+					this->environment->settings.ball_to_ball_collisions = !this->environment->settings.ball_to_ball_collisions;
+					break;
 				}
-				break;
 			}
+			break;
 		}
 
-		environment->update(time.get_delta_t()*((paused)?0:1.f));//if paused then make 0 delta t
+		environment->update(time.get_delta_t()*((this->paused) ? 0 : 1.f));//if paused then make 0 delta t
 
 		renderer.clear();
 		drawBalls(renderer, environment->BSpwn.balls);
 		drawRectangles(renderer, environment->rectangles);
 		drawLines(renderer, environment->lines);
 		current_tool->draw(renderer);
-		if (showFPS)
-			drawFPS(renderer, time.get_current_FPS());
+
+		if (this->debug) { // print debug info
+			std::ostringstream ss;
+			ss << "FPS: " << time.get_current_FPS() << "\n";
+			ss << "Balls N: " << this->environment->BSpwn.balls.size();
+			this->drawText(renderer, 0, 0, ss.str());
+		}
 		renderer.display();
 
 		time.update();
 
-		//QCoreApplication::processEvents();
 		if (quit) {
 			renderer.close();
 			quit = false;
 		}
 	}
-	//emit finished();
 }
 
 
@@ -158,8 +180,8 @@ void Simulation::drawRectangles(sf::RenderWindow &renderer, std::vector<Rectangl
 	}
 }
 
-void Simulation::drawLines(sf::RenderWindow &renderer, std::vector<Line> &Lines){
-sf::RectangleShape rect;
+void Simulation::drawLines(sf::RenderWindow &renderer, std::vector<Line> &Lines) {
+	sf::RectangleShape rect;
 	for (Line &line : Lines) {
 		rect.setSize(sf::Vector2f(line.length, line.width));
 		rect.setPosition(line.p1.x, line.p1.y);
@@ -169,22 +191,20 @@ sf::RectangleShape rect;
 	}
 }
 
-void Simulation::drawFPS(sf::RenderWindow &renderer, float fps) {
+
+void Simulation::drawText(sf::RenderWindow &renderer, int x, int y, const std::string s) {
 	sf::View prev_state;
 	prev_state = renderer.getView();
 	renderer.setView(renderer.getDefaultView());
 
 	sf::Text text;
-	std::ostringstream ss;
-	ss << "FPS: " << fps;
-	std::string s(ss.str());
 
 	text.setFont(font);
 	text.setString(s);
 	text.setOutlineColor(sf::Color::Black);
 	text.setFillColor(sf::Color::White);
 	text.setCharacterSize(20);
-	text.setPosition(renderer.getSize().x - 100, 0);
+	text.setPosition(x, y);
 	renderer.draw(text);
 
 	renderer.setView(prev_state);

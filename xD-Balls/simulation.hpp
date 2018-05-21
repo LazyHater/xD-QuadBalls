@@ -1,11 +1,12 @@
 ﻿#pragma once
-#include <SFML/Graphics.hpp>
-#include "Vector2D.h"
-#include "Environment.h"
-#include "tools.h"
-#include <fstream>
-#include <iterator>
 #include <algorithm>
+#include <iterator>
+#include <fstream>
+#include <SFML/Graphics.hpp>
+
+#include "Vector2D.hpp"
+#include "Environment.hpp"
+#include "tools.hpp"
 
 using namespace std;
 
@@ -104,8 +105,8 @@ public:
 		time.set_time_factor(10);
 	}
 
-	void setShowFPS(bool b) { 
-		showFPS = b; 
+	void setdebug(bool b) { 
+		debug = b; 
 	}
 
 	void setBallToBallCollisions(bool b) {
@@ -125,7 +126,7 @@ private:
 	bool full_screen;
 
 	sf::Font font;
-	bool showFPS = true;
+	bool debug = true;
 	Time time;
 	Environment *environment;
 	Tool *current_tool;
@@ -137,7 +138,7 @@ private:
 	void drawRectangles(sf::RenderWindow &renderer, std::vector<Rectangle> &Rectangles);
 	void drawLines(sf::RenderWindow &renderer, std::vector<Line> &Lines);
 
-	void drawFPS(sf::RenderWindow &renderer, float fps);
+	void drawText(sf::RenderWindow &renderer, int x, int y, std::string s);
 	// add your variables here
 };
 

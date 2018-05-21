@@ -1,5 +1,5 @@
 #pragma once
-#include "Ball.h"
+#include "Ball.hpp"
 
 int Ball::n = 0;
 

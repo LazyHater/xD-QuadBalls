@@ -26,19 +26,21 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Rectangle.cpp" />
     <ClCompile Include="simulation.cpp" />
+    <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Ball.h" />
-    <ClInclude Include="BallSpawner.h" />
-    <ClInclude Include="Environment.h" />
-    <ClInclude Include="Line.h" />
-    <ClInclude Include="Object.h" />
-    <ClInclude Include="qtree.h" />
-    <ClInclude Include="Rectangle.h" />
+    <ClInclude Include="Ball.hpp" />
+    <ClInclude Include="BallSpawner.hpp" />
+    <ClInclude Include="Environment.hpp" />
+    <ClInclude Include="Line.hpp" />
+    <ClInclude Include="Object.hpp" />
+    <ClInclude Include="Qtree.hpp" />
+    <ClInclude Include="Rectangle.hpp" />
     <ClInclude Include="simulation.hpp" />
-    <ClInclude Include="tools.h" />
-    <ClInclude Include="Vector2D.h" />
+    <ClInclude Include="tools.hpp" />
+    <ClInclude Include="Utils.hpp" />
+    <ClInclude Include="Vector2D.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

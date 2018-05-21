@@ -1,6 +1,7 @@
 #pragma once
-#include "Ball.h"
-#include "Environment.h"
+#include "Ball.hpp"
+#include "Environment.hpp"
+#include "Utils.hpp"
 
 enum ToolID {BALL_TOOL, RECTANGLE_TOOL, LINE_TOOL};
 

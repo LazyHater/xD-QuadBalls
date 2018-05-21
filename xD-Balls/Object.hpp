@@ -1,7 +1,8 @@
 #pragma once
-#include "Vector2D.h"
-#include <SFML/Graphics.hpp>
 #include <iostream>
+#include <SFML/Graphics.hpp>
+
+#include "Vector2D.hpp"
 
 #define P(x) std::cout<<#x<<": "<<x<<" "
 #define D(x) std::cout<<#x<<": "<<x<<" "; std::cout.flush();

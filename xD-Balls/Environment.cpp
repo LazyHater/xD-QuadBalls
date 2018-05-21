@@ -1,4 +1,4 @@
-#include "Environment.h"
+#include "Environment.hpp"
 
 Environment::Environment(Rectangle box) : box(box) {
 	this->box.color = sf::Color(255, 0, 0);
@@ -117,8 +117,10 @@ void Environment::update(float delta_t) {
 		for (int i = 0; i < settings.precision_of_calcs; i++) {
 			if (settings.gravity_forces)
 				handleGravityForces(BSpwn.balls);
-			if (settings.ball_to_ball_collisions)
-				BSpwn.handleCollisionBallToBall();
+			if (settings.ball_to_ball_collisions) {
+				// BSpwn.handleCollisionBallToBall();
+				BSpwn.handleCollisionBallToBallQuadTree(this->box);
+			}
 			handleCollisionWithScreen(BSpwn.balls);
 			handleCollisionWithLines(BSpwn.balls, lines);
 			handleCollisionWithRectangles(BSpwn.balls, rectangles);

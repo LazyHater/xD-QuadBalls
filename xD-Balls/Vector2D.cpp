@@ -1,4 +1,4 @@
-#include "Vector2D.h"
+#include "Vector2D.hpp"
 
 Vector2D::Vector2D(const Vector2D &v) : x(v.x), y(v.y) {}
 

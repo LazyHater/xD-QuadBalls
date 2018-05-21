@@ -1,7 +1,8 @@
 #pragma once
-#include "Object.h"
-#include "Rectangle.h"
 #include <cmath>
+
+#include "Rectangle.hpp"
+
 class Line : public Object {
 public:
 	Vector2D p1, p2;
