@@ -1,5 +1,28 @@
 ﻿#include "simulation.hpp"
 #include <sstream>
+const std::string HELP_MSG(
+R"(Navigation
+Arrows - navigate
+Scrool - up/down - zoom in/out
+Scrool - hold - navigate
+LPM - on press - choose direction and velocity for new balls
+LPM - on release - deploy new balls
+PPM - reset simulation
+
+Funcionality
+H - print this help
+D - print debug info
+P - pause simulation
+R - reset simulation
+1 - set collision strategy to disable
+2 - set collision strategy to naive
+3 - set collision strategy to qtree
+4 - set collision strategy to parallel_qtree
+F5 - quick save of simulation state
+F7 - quick load of simulation state
+ESC - quit simulation
+)"
+);
 
 Simulation::Simulation(sf::VideoMode vm, bool full_screen) : video_mode(vm), full_screen(full_screen) {
 	environment = new Environment(Rectangle(0, 0, vm.width, vm.height));
@@ -60,11 +83,7 @@ void Simulation::process() {
 				break;
 
 			case sf::Event::MouseButtonPressed:
-				current_tool->update(event, renderer);
-				break;
 			case sf::Event::MouseButtonReleased:
-				current_tool->update(event, renderer);
-				break;
 			case sf::Event::MouseMoved:
 				static sf::Event::MouseMoveEvent prev_mouse_move;
 				current_tool->update(event, renderer);
@@ -75,6 +94,7 @@ void Simulation::process() {
 				}
 				prev_mouse_move = event.mouseMove;
 				break;
+
 			case sf::Event::MouseWheelScrolled:
 				if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel) {
 					if (event.mouseWheelScroll.delta < 0) {
@@ -123,22 +143,48 @@ void Simulation::process() {
 					break;
 
 				case sf::Keyboard::D: // enable / disable debug printing
-					paused = !paused;
+					print_debug = !print_debug;
+					print_help = false;
+					break;
+
+				case sf::Keyboard::H: // enable / disable help printing
+					print_help = !print_help;
+					print_debug = false;
 					break;
 
 				case sf::Keyboard::P: // pause
 					paused = !paused;
 					break;
 
+				case sf::Keyboard::R: // pause
+					this->environment->BSpwn.balls.clear();
+					break;
+
 				case sf::Keyboard::C: // enable / disable collisions
 					this->environment->settings.ball_to_ball_collisions = !this->environment->settings.ball_to_ball_collisions;
+					break;
+
+				case sf::Keyboard::Num1: // set collision strategy to disable
+					this->environment->setCurrentBallCollissionStrategy(Environment::CollisionStrategyType::Disabled);
+					break;
+
+				case sf::Keyboard::Num2: // set collision strategy to naive
+					this->environment->setCurrentBallCollissionStrategy(Environment::CollisionStrategyType::Naive);
+					break;
+
+				case sf::Keyboard::Num3: // set collision strategy to qtree
+					this->environment->setCurrentBallCollissionStrategy(Environment::CollisionStrategyType::Qtree);
+					break;
+
+				case sf::Keyboard::Num4: // set collision strategy to parallel_qtree
+					this->environment->setCurrentBallCollissionStrategy(Environment::CollisionStrategyType::ParallelQtree);
 					break;
 				}
 			}
 			break;
 		}
 
-		environment->update(time.get_delta_t()*((this->paused) ? 0 : 1.f));//if paused then make 0 delta t
+		environment->update(time.getDeltaT()*((this->paused) ? 0 : 1.f));//if paused then make 0 delta t
 
 		renderer.clear();
 		drawBalls(renderer, environment->BSpwn.balls);
@@ -146,12 +192,16 @@ void Simulation::process() {
 		drawLines(renderer, environment->lines);
 		current_tool->draw(renderer);
 
-		if (this->debug) { // print debug info
+		if (this->print_debug) { // print debug info
 			std::ostringstream ss;
-			ss << "FPS: " << time.get_current_FPS() << "\n";
+			ss << "FPS: " << time.getAvgFps() << "\n";
 			ss << "Balls N: " << this->environment->BSpwn.balls.size() << "\n";
-			ss << "Ball Strategy: " << this->environment->current_ball_strategy->name;
+			ss << "Ball Strategy: " << this->environment->getCurrentBallCollissionStrategyName();
 			this->drawText(renderer, 0, 0, ss.str());
+		}
+
+		if (this->print_help) { // print help message
+			this->drawText(renderer, 0, 0, HELP_MSG);
 		}
 		renderer.display();
 

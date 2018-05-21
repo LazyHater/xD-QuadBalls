@@ -11,14 +11,7 @@
 using namespace std;
 
 
-class Time { // what a mess
-	sf::Time delta_t = sf::seconds(0);
-	sf::Time max_fps = sf::seconds(60.f); // max on 60 fps
-	sf::Time max_frame_time = sf::seconds(1.f/60.f); // max on 60 fps
-	float currentFPS;
-	float time_factor = 1.f;
-	sf::Clock clock;
-	bool holdFPS = true;
+class Time {
 public:
 	Time() {
 		max_frame_time = sf::seconds(1 / max_fps.asSeconds());
@@ -29,13 +22,42 @@ public:
 			sf::sleep(max_frame_time - delta_t);
 		delta_t = clock.restart();
 		currentFPS = 1 / delta_t.asSeconds();
+		newSample(currentFPS);
 		delta_t *= time_factor;
 	}
 
-	float get_delta_t() { return delta_t.asSeconds(); }
-	float get_current_FPS() { return currentFPS; }
 
-	void set_time_factor(double val) { time_factor = val; }
+
+	float getDeltaT() { return delta_t.asSeconds(); }
+	float getCurrentFps() { return currentFPS; }
+	float getAvgFps() { 
+		float sum = 0.0f;
+		for (size_t i = 0; i < FPS_SAMPLES; i++) {
+			sum += samples[i];
+		}
+		return sum / (float)FPS_SAMPLES;
+	}
+
+	void setTimeFactor(double val) { time_factor = val; }
+
+private:
+	static const size_t FPS_SAMPLES = 10;
+	float samples[FPS_SAMPLES] = {0.0f};
+	size_t next_sample_idx = 0;
+
+	sf::Time delta_t = sf::seconds(0);
+	sf::Time max_fps = sf::seconds(60.f); // max on 60 fps
+	sf::Time max_frame_time = sf::seconds(1.f / 60.f); // max on 60 fps
+	float currentFPS;
+	float time_factor = 1.f;
+	sf::Clock clock;
+	bool holdFPS = true;
+
+	void newSample(float sample) {
+		samples[next_sample_idx] = sample;
+		next_sample_idx++;
+		next_sample_idx %= FPS_SAMPLES;
+	}
 };
 
 class Simulation{
@@ -90,23 +112,23 @@ public:
 	}
 
 	void setTimeFactor(double val) {
-		time.set_time_factor(val);
+		time.setTimeFactor(val);
 	}
 	void setVerySlowTimeFactor() {
-		time.set_time_factor(0.01);
+		time.setTimeFactor(0.01);
 	}
 	void setSlowTimeFactor() {
-		time.set_time_factor(0.1);
+		time.setTimeFactor(0.1);
 	}
 	void setNormalTimeFactor() {
-		time.set_time_factor(1);
+		time.setTimeFactor(1);
 	}
 	void setFastTimeFactor() {
-		time.set_time_factor(10);
+		time.setTimeFactor(10);
 	}
 
-	void setdebug(bool b) { 
-		debug = b; 
+	void setPrintDebug(bool b) { 
+		print_debug = b; 
 	}
 
 	void setBallToBallCollisions(bool b) {
@@ -126,7 +148,8 @@ private:
 	bool full_screen;
 
 	sf::Font font;
-	bool debug = true;
+	bool print_debug = true;
+	bool print_help = false;
 	Time time;
 	Environment *environment;
 	Tool *current_tool;

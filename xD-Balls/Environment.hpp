@@ -2,8 +2,10 @@
 #include "Line.hpp"
 #include "BallSpawner.hpp"
 #include "Rectangle.hpp"
+#include "DisabledBallCollissionStrategy.hpp"
 #include "NaiveBallCollissionStrategy.hpp"
 #include "QtreeBallCollissionStrategy.hpp"
+#include "ParallelQtreeBallCollissionStrategy.hpp"
 
 struct Settings {
 	int precision_of_calcs = 1;  //the more the better precision
@@ -19,21 +21,30 @@ class Environment {
 public:
 	Environment(Rectangle box);
 
+	enum CollisionStrategyType
+	{
+		Disabled, Naive, Qtree, ParallelQtree
+	};
+
 	BallSpawner BSpwn;
 	std::vector<Line> lines;
 	std::vector<Rectangle> rectangles;
-	BallCollissionStrategy* current_ball_strategy;
 	Settings settings;
 	Rectangle bbox; //area where objects can move and exist
 
 
 	void create(Rectangle box);
 	void update(float delta_t);
+	void setCurrentBallCollissionStrategy(CollisionStrategyType type);
+    const std::string getCurrentBallCollissionStrategyName() const { return current_ball_strategy->name; }
 
 private:
+	BallCollissionStrategy* current_ball_strategy;
+	DisabledBallCollissionStrategy disabled_ball_strategy;
 	NaiveBallCollissionStrategy naive_ball_strategy;
 	QtreeBallCollissionStrategy qtree_ball_strategy;
-
+	ParallelQtreeBallCollissionStrategy parallel_qtree_ball_strategy;
+	
 	void handleCollisionWithScreen(std::vector<Ball> &balls);
 	void handleCollisionWithLines(std::vector<Ball> &balls, std::vector<Line> lines);
 	void handleCollisionWithRectangles(std::vector<Ball> &balls, std::vector <Rectangle> &rectangles);

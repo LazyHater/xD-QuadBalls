@@ -137,3 +137,24 @@ void Environment::update(float delta_t) {
 	
 
 }
+
+void Environment::setCurrentBallCollissionStrategy(CollisionStrategyType type)
+{
+	switch (type) {
+	case Disabled:
+		current_ball_strategy = &disabled_ball_strategy;
+		break;
+
+	case Naive:
+		current_ball_strategy = &naive_ball_strategy;
+		break;
+
+	case Qtree:
+		current_ball_strategy = &qtree_ball_strategy;
+		break;
+
+	case ParallelQtree:
+		current_ball_strategy = &parallel_qtree_ball_strategy;
+		break;
+	}
+}
