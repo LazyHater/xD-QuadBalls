@@ -41,6 +41,7 @@ private:
 	bool randomRadius = false;
 	bool randomVelocity = true;
 	bool randomColor = true;
+	int textures_n = 2;
 
 	bool draw_flag = false;
 
@@ -52,6 +53,7 @@ public:
 	void setBallsRandomVelocity(bool b) { randomVelocity = b; }
 	void setBallsRandomRadius(bool b) { randomRadius = b; }
 	void setBallsRandomColor(bool b) { randomColor = b; }
+	void setBallsTexturesNumber(int n) { textures_n = n; }
 
 
 	BallTool(Environment *e) : Tool(e) {
@@ -79,6 +81,7 @@ public:
 						ball.color = sf::Color(randFromTo(20, 255), randFromTo(80, 255), randFromTo(80, 255));
 					if (randomRadius)
 						ball.r = randFromTo(3, 15);
+					ball.texture_id = randFromTo(0, textures_n);
 					buffor.push_back(ball);
 				}
 			} 

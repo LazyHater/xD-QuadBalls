@@ -2,11 +2,8 @@
 #include <sstream>
 
 Simulation::Simulation(sf::VideoMode vm, bool full_screen) : video_mode(vm), full_screen(full_screen) {
-
 	environment = new Environment(Rectangle(0, 0, vm.width, vm.height));
 	environment->settings.ball_to_ball_collisions = true;
-	//environment->settings.gravity_forces = true;
-
 
 	ball_tool = new BallTool(environment);
 	ball_tool->setBallsMass(1);
@@ -18,8 +15,20 @@ Simulation::Simulation(sf::VideoMode vm, bool full_screen) : video_mode(vm), ful
 	current_tool = ball_tool;
 
 	font.loadFromFile("fonts\\Roboto\\Roboto-Light.ttf");
-	ball_texture.loadFromFile("textures\\ball.png");
-	ball_texture.setSmooth(true);
+
+	int textures_n = 12;
+	this->ball_textures.resize(textures_n);
+	std::cout << "vsize: " << this->ball_textures.size();
+	for (int i = 0; i < textures_n; i++) {
+		std::ostringstream ss;
+		ss << "textures\\ball\\" << i << ".png";
+		printf("loading asset: %s\n", ss.str().c_str());
+		this->ball_textures[i].loadFromFile(ss.str());
+		this->ball_textures[i].setSmooth(true);
+	}
+
+	ball_tool->setBallsTexturesNumber(textures_n);
+
 	view.reset(sf::FloatRect(0, 0, vm.width, vm.height));
 }
 
@@ -140,7 +149,8 @@ void Simulation::process() {
 		if (this->debug) { // print debug info
 			std::ostringstream ss;
 			ss << "FPS: " << time.get_current_FPS() << "\n";
-			ss << "Balls N: " << this->environment->BSpwn.balls.size();
+			ss << "Balls N: " << this->environment->BSpwn.balls.size() << "\n";
+			ss << "Ball Strategy: " << this->environment->current_ball_strategy->name;
 			this->drawText(renderer, 0, 0, ss.str());
 		}
 		renderer.display();
@@ -157,8 +167,8 @@ void Simulation::process() {
 
 void Simulation::drawBalls(sf::RenderWindow &renderer, std::vector<Ball> &balls) {
 	sf::CircleShape circle;
-	circle.setTexture(&ball_texture);
 	for (Ball &ball : balls) {
+		circle.setTexture(&this->ball_textures[ball.texture_id]);
 		circle.setRadius(ball.r);
 		circle.setOrigin(circle.getRadius(), circle.getRadius());
 		circle.setPosition(ball.position.x, ball.position.y);

@@ -1,8 +1,8 @@
-#include "NaiveBallCollissionStrategy.h"
+#include "NaiveBallCollissionStrategy.hpp"
 
 
 
-void NaiveBallCollissionStrategy::handle(std::vector<Ball> balls)
+void NaiveBallCollissionStrategy::handle(std::vector<Ball>& balls)
 {
 	int temp = balls.size();
 	for (int i = 0; i < temp - 1; i++) {
@@ -14,10 +14,9 @@ void NaiveBallCollissionStrategy::handle(std::vector<Ball> balls)
 			}
 		}
 	}
-	
 }
 
-NaiveBallCollissionStrategy::NaiveBallCollissionStrategy()
+NaiveBallCollissionStrategy::NaiveBallCollissionStrategy() : BallCollissionStrategy("naive")
 {
 }
 

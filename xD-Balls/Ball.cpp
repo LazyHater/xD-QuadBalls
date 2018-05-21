@@ -10,10 +10,11 @@ Ball::Ball(const Ball  &ball) : r(ball.r), bounce_factor(ball.bounce_factor) , m
 	position = ball.position;
 	velocity = ball.velocity;
 	acceleration = ball.acceleration;
+	texture_id = ball.texture_id;
 	n++;
 }
 
-Ball::Ball(float x, float y, sf::Color c) : r(5) {
+Ball::Ball(float x, float y, sf::Color c, int texture_id) : r(5), texture_id(texture_id) {
 	color = c;
 	position.set(x, y);
 	m = r*r*M_PI;

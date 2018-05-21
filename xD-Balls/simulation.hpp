@@ -48,7 +48,7 @@ public:
 	RectangleTool *rectangle_tool;
 	LineTool *line_tool;
 
-	std::string quick_save_path = "saves\\quick_save.sav";
+	std::string quick_save_path = "saves\\quick_save.sim";
 
 	bool quit = false;
 
@@ -120,7 +120,7 @@ public:
 private:
 	bool paused = false;
 
-	sf::Texture ball_texture;
+	std::vector<sf::Texture> ball_textures;
 	sf::View view;
 	sf::VideoMode video_mode;
 	bool full_screen;

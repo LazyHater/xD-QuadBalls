@@ -4,7 +4,8 @@ class NaiveBallCollissionStrategy :
 	public BallCollissionStrategy
 {
 public:
-	virtual void handle(std::vector<Ball> balls);
+	virtual void handle(std::vector<Ball>& balls);
+
 
 	NaiveBallCollissionStrategy();
 	virtual ~NaiveBallCollissionStrategy();

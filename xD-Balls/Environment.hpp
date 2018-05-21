@@ -2,6 +2,8 @@
 #include "Line.hpp"
 #include "BallSpawner.hpp"
 #include "Rectangle.hpp"
+#include "NaiveBallCollissionStrategy.hpp"
+#include "QtreeBallCollissionStrategy.hpp"
 
 struct Settings {
 	int precision_of_calcs = 1;  //the more the better precision
@@ -15,25 +17,28 @@ struct Settings {
 
 class Environment {
 public:
+	Environment(Rectangle box);
+
 	BallSpawner BSpwn;
 	std::vector<Line> lines;
 	std::vector<Rectangle> rectangles;
-
+	BallCollissionStrategy* current_ball_strategy;
 	Settings settings;
+	Rectangle bbox; //area where objects can move and exist
 
-	Rectangle box; //area where objects can move and exist
-
-	Environment(Rectangle box);
 
 	void create(Rectangle box);
-
 	void update(float delta_t);
 
-public:
+private:
+	NaiveBallCollissionStrategy naive_ball_strategy;
+	QtreeBallCollissionStrategy qtree_ball_strategy;
+
 	void handleCollisionWithScreen(std::vector<Ball> &balls);
 	void handleCollisionWithLines(std::vector<Ball> &balls, std::vector<Line> lines);
 	void handleCollisionWithRectangles(std::vector<Ball> &balls, std::vector <Rectangle> &rectangles);
 	void handleGravityForces(std::vector<Ball> &balls);
+
 };
 
 

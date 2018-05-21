@@ -20,10 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Ball.cpp" />
+    <ClCompile Include="BallCollissionStrategy.cpp" />
     <ClCompile Include="BallSpawner.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NaiveBallCollissionStrategy.cpp" />
+    <ClCompile Include="QtreeBallCollissionStrategy.cpp" />
     <ClCompile Include="Rectangle.cpp" />
     <ClCompile Include="simulation.cpp" />
     <ClCompile Include="Utils.cpp" />
@@ -31,11 +34,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ball.hpp" />
+    <ClInclude Include="BallCollissionStrategy.hpp" />
     <ClInclude Include="BallSpawner.hpp" />
     <ClInclude Include="Environment.hpp" />
     <ClInclude Include="Line.hpp" />
+    <ClInclude Include="NaiveBallCollissionStrategy.hpp" />
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="Qtree.hpp" />
+    <ClInclude Include="QtreeBallCollissionStrategy.hpp" />
     <ClInclude Include="Rectangle.hpp" />
     <ClInclude Include="simulation.hpp" />
     <ClInclude Include="tools.hpp" />

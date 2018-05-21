@@ -11,9 +11,11 @@ public:
 
 	float bounce_factor;
 
+	int texture_id = 0;
+
 	Ball();
 	Ball(const Ball  &ball);
-	Ball(float x, float y, sf::Color c = sf::Color::Blue);
+	Ball(float x, float y, sf::Color c = sf::Color::Blue, int texture_id = 0);
 	Ball(Vector2D v, sf::Color c = sf::Color::Blue);
 	~Ball();
 

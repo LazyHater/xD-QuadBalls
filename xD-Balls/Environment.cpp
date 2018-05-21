@@ -1,12 +1,14 @@
 #include "Environment.hpp"
+#include "NaiveBallCollissionStrategy.hpp"
+#include "QtreeBallCollissionStrategy.hpp"
 
-Environment::Environment(Rectangle box) : box(box) {
-	this->box.color = sf::Color(255, 0, 0);
-	//this->rectangles.push_back(this->box);
+Environment::Environment(Rectangle box) : bbox(box), qtree_ball_strategy(QtreeBallCollissionStrategy(box)) {
+	this->bbox.color = sf::Color(255, 0, 0);
+	current_ball_strategy = &this->qtree_ball_strategy;
 }
 
 void Environment::create(Rectangle box) {
-	this->box.color = sf::Color(255, 0, 0);
+	this->bbox.color = sf::Color(255, 0, 0);
 	BSpwn.balls.clear();
 	lines.clear();
 	rectangles.clear();
@@ -14,24 +16,24 @@ void Environment::create(Rectangle box) {
 
 void Environment::handleCollisionWithScreen(std::vector<Ball>& balls) {
 	for (Ball &ball : balls) {
-		if (ball.position.x + ball.r > box.rect.x + box.rect.w) {
+		if (ball.position.x + ball.r > bbox.rect.x + bbox.rect.w) {
 			ball.velocity.x = -ball.velocity.x;
-			ball.position.x = box.rect.x + box.rect.w - ball.r;
+			ball.position.x = bbox.rect.x + bbox.rect.w - ball.r;
 			ball.collided = true;
 		}
-		if (ball.position.x - ball.r < box.rect.x) {
+		if (ball.position.x - ball.r < bbox.rect.x) {
 			ball.velocity.x = -ball.velocity.x;
-			ball.position.x = box.rect.x + ball.r;
+			ball.position.x = bbox.rect.x + ball.r;
 			ball.collided = true;
 		}
-		if (ball.position.y + ball.r > box.rect.y + box.rect.h) {
+		if (ball.position.y + ball.r > bbox.rect.y + bbox.rect.h) {
 			ball.velocity.y = -ball.velocity.y;
-			ball.position.y = box.rect.y + box.rect.h - ball.r;
+			ball.position.y = bbox.rect.y + bbox.rect.h - ball.r;
 			ball.collided = true;
 		}
-		if (ball.position.y - ball.r < box.rect.y) {
+		if (ball.position.y - ball.r < bbox.rect.y) {
 			ball.velocity.y = -ball.velocity.y;
-			ball.position.y = box.rect.y + ball.r;
+			ball.position.y = bbox.rect.y + ball.r;
 			ball.collided = true;
 		}
 	}
@@ -85,6 +87,7 @@ void Environment::handleCollisionWithRectangles(std::vector<Ball>& balls, std::v
 		}
 	}
 }
+
 void Environment::handleGravityForces(std::vector<Ball>& balls) {
 
 	for (Ball &ball : balls)  ball.acceleration = Vector2D(0, 0);
@@ -115,12 +118,14 @@ void Environment::update(float delta_t) {
 	//if (delta_t > max_time) delta_t = max_time;	
 	
 		for (int i = 0; i < settings.precision_of_calcs; i++) {
-			if (settings.gravity_forces)
+			if (settings.gravity_forces) {
 				handleGravityForces(BSpwn.balls);
-			if (settings.ball_to_ball_collisions) {
-				// BSpwn.handleCollisionBallToBall();
-				BSpwn.handleCollisionBallToBallQuadTree(this->box);
 			}
+
+			if (settings.ball_to_ball_collisions) {
+				current_ball_strategy->handle(BSpwn.balls);
+			}
+
 			handleCollisionWithScreen(BSpwn.balls);
 			handleCollisionWithLines(BSpwn.balls, lines);
 			handleCollisionWithRectangles(BSpwn.balls, rectangles);
