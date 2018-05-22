@@ -11,6 +11,7 @@ Ball::Ball(const Ball  &ball) : r(ball.r), bounce_factor(ball.bounce_factor) , m
 	velocity = ball.velocity;
 	acceleration = ball.acceleration;
 	texture_id = ball.texture_id;
+	//printf("dupa %i\n", n);
 	n++;
 }
 

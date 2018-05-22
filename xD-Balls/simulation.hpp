@@ -66,80 +66,33 @@ public:
 	Simulation(sf::VideoMode vm, bool full_screen);
 	~Simulation();
 
-	BallTool *ball_tool;
-	RectangleTool *rectangle_tool;
-	LineTool *line_tool;
 
 	std::string quick_save_path = "saves\\quick_save.sim";
 
 	bool quit = false;
 
-	void saveSimState(std::string s) {
-		ofstream ofs(s, ios::binary);
-
-		size_t n = environment->BSpwn.balls.size();
-		ofs.write((char *)&n, sizeof(n));
-		for (int i = 0; i < n; i++)
-			ofs.write((char *)&environment->BSpwn.balls[i], sizeof(Ball));
-		ofs.close();
-	}
-	void loadSimState(std::string s) {
-		ifstream ifs(s, ios::binary);
-		size_t n;
-		ifs.read((char *)&n, sizeof(n));
-
-		environment->BSpwn.balls.clear();
-		environment->BSpwn.balls.resize(n);
-		for (int i = 0; i < n; i++)
-			ifs.read((char *)&environment->BSpwn.balls[i], sizeof(Ball));
-		ifs.close();
-	}
+	void saveSimState(std::string s);
+	void loadSimState(std::string s);
 
 	void process();
-	void pause(bool b) { paused = b; }
-	void setTool(int ID) {
-		switch (ID) {
-		case BALL_TOOL:
-			current_tool = ball_tool;
-			break;
-		case RECTANGLE_TOOL:
-			current_tool = rectangle_tool;
-			break;
-		case LINE_TOOL:
-			current_tool = line_tool;
-			break;
-		}
-	}
+	void setPause(bool b) { paused = b; }
+	void setTool(int ID);
 
-	void setTimeFactor(double val) {
-		time.setTimeFactor(val);
-	}
-	void setVerySlowTimeFactor() {
-		time.setTimeFactor(0.01);
-	}
-	void setSlowTimeFactor() {
-		time.setTimeFactor(0.1);
-	}
-	void setNormalTimeFactor() {
-		time.setTimeFactor(1);
-	}
-	void setFastTimeFactor() {
-		time.setTimeFactor(10);
-	}
+	void setTimeFactor(double val) { time.setTimeFactor(val); }
+	void setVerySlowTimeFactor() { time.setTimeFactor(0.01); }
+	void setSlowTimeFactor() { time.setTimeFactor(0.1);	}
+	void setNormalTimeFactor() { time.setTimeFactor(1); }
+	void setFastTimeFactor() { time.setTimeFactor(10); }
 
-	void setPrintDebug(bool b) { 
-		print_debug = b; 
-	}
-
-	void setBallToBallCollisions(bool b) {
-		environment->settings.ball_to_ball_collisions = b;
-	}
-
-	void setGravityForces(bool b) {
-		environment->settings.gravity_forces = b;
-	}
+	void setPrintDebug(bool b) { print_debug = b; }
+	void setBallToBallCollisions(bool b) { environment.settings.ball_to_ball_collisions = b; }
+	void setGravityForces(bool b) {	environment.settings.gravity_forces = b; }
 
 private:
+	BallTool ball_tool;
+	RectangleTool rectangle_tool;
+	LineTool line_tool;
+
 	bool paused = false;
 
 	std::vector<sf::Texture> ball_textures;
@@ -151,7 +104,7 @@ private:
 	bool print_debug = true;
 	bool print_help = false;
 	Time time;
-	Environment *environment;
+	Environment environment;
 	Tool *current_tool;
 
 	float scale = 1.f;

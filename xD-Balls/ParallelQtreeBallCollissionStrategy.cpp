@@ -51,13 +51,14 @@ void plowBalls(Ball & ball_1, Ball & ball_2, float distance)
 	ball_2.position += delta * (temp*ball_1.m);
 }
 
-void helper(int id,	tml::qtree<double, Ball*>* tree, std::vector<Ball>& balls, int from, int to) {
-	int balls_n = balls.size();
+void helper(int id,	tml::qtree<double, Ball*>* tree, std::vector<Ball>* balls, int from, int to) {
+	
+	int balls_n = balls->size();
 	std::vector<const tml::qtree<double, Ball*>::node_type *> result;
 
 	// querry tree and handle collisions
 	for (int i = from; i < to; i++) {
-		Ball* b1 = &balls[i];
+		Ball* b1 = &((*balls)[i]);
 
 		tree->search(b1->position.x, b1->position.y, b1->r * 2, result);
 
@@ -124,9 +125,9 @@ void ParallelQtreeBallCollissionStrategy::handle(std::vector<Ball>& balls)
 
 	std::vector<std::future<void>> results(chunks);
 	for (int i = 0; i < chunks - 1; i++) {
-		results[i] = p->push(helper, &tree, balls, i * chunk_size, (i + 1) * chunk_size);
+		results[i] = p->push(helper, &tree, &balls, i * chunk_size, (i + 1) * chunk_size);
 	}
-	results[chunks - 1] = p->push(helper, &tree, balls, (chunks - 1) * chunk_size, balls_n); // missing bit
+	results[chunks - 1] = p->push(helper, &tree, &balls, (chunks - 1) * chunk_size, balls_n); // missing bit
 
 
 	for (int i = 0; i < chunks; i++) {

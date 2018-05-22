@@ -37,7 +37,7 @@ void QtreeBallCollissionStrategy::handle(std::vector<Ball>& balls)
 				ballsCollision(*b1, *b2);
 			}
 		}
-	}
+	}	
 }
 
 QtreeBallCollissionStrategy::QtreeBallCollissionStrategy(const Rectangle bbox) : BallCollissionStrategy("qtree"), bbox(bbox)

@@ -1,7 +1,7 @@
 ﻿#include "simulation.hpp"
 #include <sstream>
 const std::string HELP_MSG(
-R"(Navigation
+	R"(Navigation
 Arrows - navigate
 Scrool - up/down - zoom in/out
 Scrool - hold - navigate
@@ -24,18 +24,21 @@ ESC - quit simulation
 )"
 );
 
-Simulation::Simulation(sf::VideoMode vm, bool full_screen) : video_mode(vm), full_screen(full_screen) {
-	environment = new Environment(Rectangle(0, 0, vm.width, vm.height));
-	environment->settings.ball_to_ball_collisions = true;
+Simulation::Simulation(sf::VideoMode vm, bool full_screen) : 
+	video_mode(vm), 
+	full_screen(full_screen), 
+	environment(Rectangle(0, 0, vm.width, vm.height)),
+	ball_tool(&environment), 
+	rectangle_tool(&environment), 
+	line_tool(&environment) 
+{
+	environment.settings.ball_to_ball_collisions = true;
 
-	ball_tool = new BallTool(environment);
-	ball_tool->setBallsMass(1);
-	ball_tool->setBallsPerDeploy(100);
-	ball_tool->setBallsRadius(1);
-	ball_tool->setBallsBounceFactor(1);
-	rectangle_tool = new RectangleTool(environment);
-	line_tool = new LineTool(environment);
-	current_tool = ball_tool;
+	ball_tool.setBallsMass(1);
+	ball_tool.setBallsPerDeploy(100);
+	ball_tool.setBallsRadius(1);
+	ball_tool.setBallsBounceFactor(1);
+	current_tool = &ball_tool;
 
 	font.loadFromFile("fonts\\Roboto\\Roboto-Light.ttf");
 
@@ -50,30 +53,47 @@ Simulation::Simulation(sf::VideoMode vm, bool full_screen) : video_mode(vm), ful
 		this->ball_textures[i].setSmooth(true);
 	}
 
-	ball_tool->setBallsTexturesNumber(textures_n);
+	ball_tool.setBallsTexturesNumber(textures_n);
 
 	view.reset(sf::FloatRect(0, 0, vm.width, vm.height));
 }
 
-Simulation::~Simulation() {
-	delete environment;
-	delete ball_tool;
-	delete rectangle_tool;
-	delete line_tool;
+Simulation::~Simulation() {}
+
+void Simulation::saveSimState(std::string s) {
+	ofstream ofs(s, ios::binary);
+	size_t n = environment.BSpwn.balls.size();
+	ofs.write((char *)&n, sizeof(n));
+	for (int i = 0; i < n; i++)
+		ofs.write((char *)&environment.BSpwn.balls[i], sizeof(Ball));
+	ofs.close();
+}
+
+void Simulation::loadSimState(std::string s) {
+	ifstream ifs(s, ios::binary);
+	size_t n;
+	ifs.read((char *)&n, sizeof(n));
+
+	environment.BSpwn.balls.clear();
+	environment.BSpwn.balls.resize(n);
+	for (int i = 0; i < n; i++)
+		ifs.read((char *)&environment.BSpwn.balls[i], sizeof(Ball));
+	ifs.close();
 }
 
 void Simulation::process() {
 	sf::RenderWindow renderer;
 	sf::VideoMode::getFullscreenModes()[0];
-	if (full_screen)
+	if (full_screen) {
 		renderer.create(video_mode, "Simulate Window", sf::Style::Fullscreen);
-	else
+	}
+	else {
 		renderer.create(video_mode, "Simulate Window");
+	}
 
 	renderer.setView(view);
 	while (renderer.isOpen())
 	{
-
 		sf::Event event;
 		while (renderer.pollEvent(event)) //event loop
 		{
@@ -157,46 +177,42 @@ void Simulation::process() {
 					break;
 
 				case sf::Keyboard::R: // pause
-					this->environment->BSpwn.balls.clear();
-					break;
-
-				case sf::Keyboard::C: // enable / disable collisions
-					this->environment->settings.ball_to_ball_collisions = !this->environment->settings.ball_to_ball_collisions;
+					this->environment.BSpwn.balls.clear();
 					break;
 
 				case sf::Keyboard::Num1: // set collision strategy to disable
-					this->environment->setCurrentBallCollissionStrategy(Environment::CollisionStrategyType::Disabled);
+					this->environment.setCurrentBallCollissionStrategy(Environment::CollisionStrategyType::Disabled);
 					break;
 
 				case sf::Keyboard::Num2: // set collision strategy to naive
-					this->environment->setCurrentBallCollissionStrategy(Environment::CollisionStrategyType::Naive);
+					this->environment.setCurrentBallCollissionStrategy(Environment::CollisionStrategyType::Naive);
 					break;
 
 				case sf::Keyboard::Num3: // set collision strategy to qtree
-					this->environment->setCurrentBallCollissionStrategy(Environment::CollisionStrategyType::Qtree);
+					this->environment.setCurrentBallCollissionStrategy(Environment::CollisionStrategyType::Qtree);
 					break;
 
 				case sf::Keyboard::Num4: // set collision strategy to parallel_qtree
-					this->environment->setCurrentBallCollissionStrategy(Environment::CollisionStrategyType::ParallelQtree);
+					this->environment.setCurrentBallCollissionStrategy(Environment::CollisionStrategyType::ParallelQtree);
 					break;
 				}
 			}
 			break;
 		}
 
-		environment->update(time.getDeltaT()*((this->paused) ? 0 : 1.f));//if paused then make 0 delta t
+		environment.update(time.getDeltaT()*((this->paused) ? 0 : 1.f));//if paused then make 0 delta t
 
 		renderer.clear();
-		drawBalls(renderer, environment->BSpwn.balls);
-		drawRectangles(renderer, environment->rectangles);
-		drawLines(renderer, environment->lines);
+		drawBalls(renderer, environment.BSpwn.balls);
+		drawRectangles(renderer, environment.rectangles);
+		drawLines(renderer, environment.lines);
 		current_tool->draw(renderer);
 
 		if (this->print_debug) { // print debug info
 			std::ostringstream ss;
 			ss << "FPS: " << time.getAvgFps() << "\n";
-			ss << "Balls N: " << this->environment->BSpwn.balls.size() << "\n";
-			ss << "Ball Strategy: " << this->environment->getCurrentBallCollissionStrategyName();
+			ss << "Balls N: " << this->environment.BSpwn.balls.size() << "\n";
+			ss << "Ball Strategy: " << this->environment.getCurrentBallCollissionStrategyName();
 			this->drawText(renderer, 0, 0, ss.str());
 		}
 
@@ -211,6 +227,20 @@ void Simulation::process() {
 			renderer.close();
 			quit = false;
 		}
+	}
+}
+
+void Simulation::setTool(int ID) {
+	switch (ID) {
+	case BALL_TOOL:
+		current_tool = &ball_tool;
+		break;
+	case RECTANGLE_TOOL:
+		current_tool = &rectangle_tool;
+		break;
+	case LINE_TOOL:
+		current_tool = &line_tool;
+		break;
 	}
 }
 
