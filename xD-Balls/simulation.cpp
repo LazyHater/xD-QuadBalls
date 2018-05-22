@@ -31,7 +31,7 @@ Simulation::Simulation(sf::VideoMode vm, bool full_screen) : video_mode(vm), ful
 	ball_tool = new BallTool(environment);
 	ball_tool->setBallsMass(1);
 	ball_tool->setBallsPerDeploy(100);
-	ball_tool->setBallsRadius(10);
+	ball_tool->setBallsRadius(1);
 	ball_tool->setBallsBounceFactor(1);
 	rectangle_tool = new RectangleTool(environment);
 	line_tool = new LineTool(environment);

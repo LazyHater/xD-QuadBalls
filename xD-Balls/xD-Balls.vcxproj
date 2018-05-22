@@ -38,6 +38,7 @@
     <ClInclude Include="Ball.hpp" />
     <ClInclude Include="BallCollissionStrategy.hpp" />
     <ClInclude Include="BallSpawner.hpp" />
+    <ClInclude Include="ctpl_stl.hpp" />
     <ClInclude Include="DisabledBallCollissionStrategy.hpp" />
     <ClInclude Include="Environment.hpp" />
     <ClInclude Include="Line.hpp" />

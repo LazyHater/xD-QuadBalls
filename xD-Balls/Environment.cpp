@@ -1,8 +1,13 @@
 #include "Environment.hpp"
 #include "NaiveBallCollissionStrategy.hpp"
 #include "QtreeBallCollissionStrategy.hpp"
+#include "QtreeBallCollissionStrategy.hpp"
 
-Environment::Environment(Rectangle box) : bbox(box), qtree_ball_strategy(QtreeBallCollissionStrategy(box)) {
+Environment::Environment(Rectangle box) : 
+	bbox(box), 
+	qtree_ball_strategy(QtreeBallCollissionStrategy(box)), 
+	parallel_qtree_ball_strategy(ParallelQtreeBallCollissionStrategy(box)) 
+{
 	this->bbox.color = sf::Color(255, 0, 0);
 	current_ball_strategy = &this->qtree_ball_strategy;
 }

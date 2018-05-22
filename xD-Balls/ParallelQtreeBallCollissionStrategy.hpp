@@ -1,13 +1,19 @@
 #pragma once
-#include "BallCollissionStrategy.hpp"
+#include "QtreeBallCollissionStrategy.hpp"
+#include "ctpl_stl.hpp"
+#include "Rectangle.hpp"
+
 class ParallelQtreeBallCollissionStrategy :
-	public BallCollissionStrategy
+	public QtreeBallCollissionStrategy
 {
 public:
-	ParallelQtreeBallCollissionStrategy();
+	ParallelQtreeBallCollissionStrategy(const Rectangle bbox);
 	virtual ~ParallelQtreeBallCollissionStrategy();
 
 	// Inherited via BallCollissionStrategy
 	virtual void handle(std::vector<Ball>& balls) override;
+
+private:
+	ctpl::thread_pool* p;
 };
 

@@ -107,5 +107,8 @@
     <ClInclude Include="DisabledBallCollissionStrategy.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ctpl_stl.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

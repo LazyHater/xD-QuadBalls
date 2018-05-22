@@ -8,16 +8,17 @@ void QtreeBallCollissionStrategy::handle(std::vector<Ball>& balls)
 	tml::qtree<double, Ball*> tree(bbox.rect.x - 100, bbox.rect.y - 100, bbox.rect.x + bbox.rect.w + 100, bbox.rect.y + bbox.rect.h + 100);
 	int fail_cnt = 0;
 
+	
 	int balls_n = balls.size();
-
 	// build tree
 	for (int i = 0; i < balls_n - 1; i++) {
 		if (!tree.add_node(balls[i].position.x, balls[i].position.y, &balls[i])) {
 			fail_cnt += 1;
 		}
 	}
-
+	
 	std::vector<const tml::qtree<double, Ball*>::node_type *> result;
+	
 	// querry tree and handle collisions
 	for (int i = 0; i < balls_n - 1; i++) {
 		Ball* b1 = &balls[i];
@@ -39,7 +40,6 @@ void QtreeBallCollissionStrategy::handle(std::vector<Ball>& balls)
 	}
 }
 
-
 QtreeBallCollissionStrategy::QtreeBallCollissionStrategy(const Rectangle bbox) : BallCollissionStrategy("qtree"), bbox(bbox)
 {
 }
@@ -47,4 +47,10 @@ QtreeBallCollissionStrategy::QtreeBallCollissionStrategy(const Rectangle bbox) :
 QtreeBallCollissionStrategy::~QtreeBallCollissionStrategy()
 {
 }
+
+QtreeBallCollissionStrategy::QtreeBallCollissionStrategy(const Rectangle bbox, std::string name) : BallCollissionStrategy(name), bbox(bbox)
+{
+}
+
+
 
