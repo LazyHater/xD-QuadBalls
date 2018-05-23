@@ -27,7 +27,8 @@ void BallTool::update(const sf::Event & event, const sf::RenderWindow & renderer
 					ball.color = sf::Color(Utils::rand(20, 255), Utils::rand(80, 255), Utils::rand(80, 255));
 				if (randomRadius)
 					ball.r = Utils::dRand(3, 15);
-				ball.texture_id = static_cast<unsigned int>(Utils::rand(0, textures_n));
+				ball.texture_id = static_cast<unsigned int>(Utils::rand(0, textures_n - 1));
+
 				buffor.push_back(ball);
 			}
 		}
@@ -39,8 +40,9 @@ void BallTool::update(const sf::Event & event, const sf::RenderWindow & renderer
 				for (int i = 0; i < temp; i++)
 					e->BSpwn.balls.pop_back();
 			}
-			else
+			else {
 				e->BSpwn.balls.clear();
+			}
 		}
 		break;
 

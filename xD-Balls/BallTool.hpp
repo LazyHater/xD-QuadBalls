@@ -13,11 +13,11 @@ public:
 	void setBallsRandomColor(const bool b) { randomColor = b; }
 	void setBallsTexturesNumber(const int n) { textures_n = n; }
 
-	explicit BallTool(Environment *e);
+	explicit BallTool(Environment* e);
 	~BallTool();
 
-	virtual void update(const sf::Event & event, const sf::RenderWindow & renderer) override;
-	virtual void draw(sf::RenderWindow &renderer) override;
+	virtual void update(const sf::Event& event, const sf::RenderWindow& renderer) override;
+	virtual void draw(sf::RenderWindow& renderer) override;
 
 private:
 	Vector2D additionalVelocity;

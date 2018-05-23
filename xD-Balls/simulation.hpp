@@ -5,12 +5,14 @@
 #include <SFML/Graphics.hpp>
 
 #include "Environment.hpp"
-#include "Tool.hpp"
-#include "FpsHandler.hpp"
-#include "BallTool.hpp"
-#include "RectangleTool.hpp"
-#include "LineTool.hpp"
 #include "AverageFilter.hpp"
+#include "FpsHandler.hpp"
+
+#include "Tool.hpp"
+#include "BallTool.hpp"
+#include "LineTool.hpp"
+#include "RectangleTool.hpp"
+#include "AttractionTool.hpp"
 
 using namespace std;
 
@@ -37,8 +39,9 @@ public:
 
 private:
 	BallTool ball_tool;
-	RectangleTool rectangle_tool;
 	LineTool line_tool;
+	RectangleTool rectangle_tool;
+	AttractionTool attraction_tool;
 
 	bool paused = false;
 	bool quit = false;
@@ -63,9 +66,9 @@ private:
 	AverageFilter<sf::Int32> update_ms_time;
 	AverageFilter<sf::Int32> render_ms_time;
 
-	void update();
 	void loadAssets();
 	void eventLoop(sf::RenderWindow &renderer);
+	void update();
 	void render(sf::RenderWindow &renderer);
 
 	void drawBalls(sf::RenderWindow &renderer, const std::vector<Ball>& balls);

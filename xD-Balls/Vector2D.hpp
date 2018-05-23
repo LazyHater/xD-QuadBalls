@@ -19,7 +19,7 @@ public:
 	static double distance(Vector2D v1, Vector2D v2);
 	void swap(Vector2D &v);
 	double magnitude();
-	void normalize();
+	Vector2D& normalize();
 	double scalar(Vector2D v);
 	void rotate(double alpha);
 	double angle(Vector2D v);

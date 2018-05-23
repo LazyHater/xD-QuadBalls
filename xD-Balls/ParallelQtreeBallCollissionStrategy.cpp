@@ -51,7 +51,6 @@ void ParallelQtreeBallCollissionStrategy::handle(std::vector<Ball>& balls) {
 			fail_cnt += 1;
 		}
 	}
-
 	
 	int chunks = balls_n / 1000;
 	if (chunks <= 4) {

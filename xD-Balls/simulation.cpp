@@ -35,6 +35,7 @@ Tools
 B - set tool to ball_tool
 L - set tool to line_tool
 O - set tool to rectangle_tool
+A - set tool to attraction_tool
 )"
 );
 
@@ -44,7 +45,8 @@ Simulation::Simulation(const sf::VideoMode vm, const bool full_screen) :
 	environment(Rectangle(0, 0, vm.width, vm.height)),
 	ball_tool(&environment),
 	rectangle_tool(&environment),
-	line_tool(&environment)
+	line_tool(&environment),
+	attraction_tool(&environment)
 {
 	ball_tool.setBallsMass(1000);
 	ball_tool.setBallsRadius(10);
@@ -245,6 +247,10 @@ void Simulation::eventLoop(sf::RenderWindow &renderer) {
 				this->setTool(Tool::RECTANGLE_TOOL);
 				break;
 
+			case sf::Keyboard::A: // set tool to attraction_tool
+				this->setTool(Tool::ATTRACTION_TOOL);
+				break;
+
 			case sf::Keyboard::Add: // increase simulation speed
 				this->time.setTimeFactor(this->time.getTimeFactor() + 0.1f);
 				break;
@@ -318,9 +324,12 @@ void Simulation::setTool(const int id) {
 	case Tool::LINE_TOOL:
 		current_tool = &line_tool;
 		break;
+
+	case Tool::ATTRACTION_TOOL:
+		current_tool = &attraction_tool;
+		break;
 	}
 }
-
 
 void Simulation::drawBalls(sf::RenderWindow &renderer, const std::vector<Ball>& balls) {
 	sf::CircleShape circle;

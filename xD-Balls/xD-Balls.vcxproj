@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AttractionTool.cpp" />
     <ClCompile Include="AverageFilter.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="BallCollissionStrategy.cpp" />
@@ -42,6 +43,7 @@
     <ClCompile Include="Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AttractionTool.hpp" />
     <ClInclude Include="AverageFilter.hpp" />
     <ClInclude Include="Ball.hpp" />
     <ClInclude Include="BallCollissionStrategy.hpp" />

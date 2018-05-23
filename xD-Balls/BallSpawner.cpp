@@ -23,8 +23,7 @@ void BallSpawner::deployBalls(const Ball source, int n, bool random_velocity, bo
 			ball.r = Utils::dRand(3, 15);
 		}
 
-		ball.texture_id = Utils::rand(0, static_cast<const int>(texture_max_id + 1));
-		printf("%i\n", ball.texture_id);
+		ball.texture_id = 0;//Utils::rand(0, static_cast<const int>(2));
 
 		balls.push_back(ball);
 	}

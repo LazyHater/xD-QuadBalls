@@ -9,7 +9,8 @@
 class Tool
 {
 public:
-	enum ToolType { BALL_TOOL, RECTANGLE_TOOL, LINE_TOOL };
+	enum ToolType { BALL_TOOL, RECTANGLE_TOOL, LINE_TOOL, ATTRACTION_TOOL
+	};
 
 	const std::string name;
 

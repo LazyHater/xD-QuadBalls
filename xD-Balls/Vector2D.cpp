@@ -42,9 +42,10 @@ double Vector2D::magnitude() {
 	return sqrt(x*x+y*y);
 }
 
-void  Vector2D::normalize() {
+Vector2D& Vector2D::normalize() {
 	double mag = sqrt(x*x+y*y);
 	this->set(x / (double)mag, y / (double)mag);
+	return *this;
 }
 
 double Vector2D::scalar(Vector2D v) {
