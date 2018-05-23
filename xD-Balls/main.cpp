@@ -2,9 +2,9 @@
 #include "simulation.hpp"
 #include "qtree.hpp"
 #include "Utils.hpp"
+#include "AverageFilter.hpp"
 
 int main() {
-
 	Simulation sim(sf::VideoMode(1920, 1080), true);
 	sim.mainLoop();
 

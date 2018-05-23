@@ -1,10 +1,10 @@
-#include "Time.hpp"
+#include "FpsHandler.hpp"
 
-Time::Time() : max_frame_time(sf::seconds(1 / max_fps.asSeconds())) {}
+FpsHandler::FpsHandler() : max_frame_time(sf::seconds(1 / max_fps.asSeconds())) {}
 
-Time::~Time() = default;
+FpsHandler::~FpsHandler() = default;
 
-void Time::update() {
+void FpsHandler::update() {
 	delta_t = clock.getElapsedTime();
 	if (delta_t < max_frame_time)
 		sf::sleep(max_frame_time - delta_t);
@@ -14,7 +14,7 @@ void Time::update() {
 	delta_t *= static_cast<float>(time_factor);
 }
 
-double Time::getAvgFps() const {
+double FpsHandler::getAvgFps() const {
 	double sum = 0.0f;
 	for (size_t i = 0; i < FPS_SAMPLES; i++) {
 		sum += samples[i];
@@ -22,7 +22,7 @@ double Time::getAvgFps() const {
 	return sum / (double)FPS_SAMPLES;
 }
 
-void Time::newSample(const double sample) {
+void FpsHandler::newSample(const double sample) {
 	samples[next_sample_idx] = sample;
 	next_sample_idx++;
 	next_sample_idx %= FPS_SAMPLES;

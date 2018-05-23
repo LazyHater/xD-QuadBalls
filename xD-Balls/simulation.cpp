@@ -49,6 +49,7 @@ Simulation::Simulation(const sf::VideoMode vm, const bool full_screen) :
 	ball_tool.setBallsMass(1000);
 	ball_tool.setBallsRadius(10);
 	ball_tool.setBallsBounceFactor(1);
+	ball_tool.setBallsPerDeploy(1000);
 	current_tool = &ball_tool;
 
 	loadAssets();
@@ -100,6 +101,7 @@ void Simulation::loadSimState(const std::string s) {
 
 void Simulation::mainLoop() {
 	sf::RenderWindow renderer;
+	sf::Clock clock;
 
 	if (full_screen) {
 		renderer.create(video_mode, "Simulate Window", sf::Style::Fullscreen);
@@ -112,13 +114,19 @@ void Simulation::mainLoop() {
 	while (renderer.isOpen())
 	{
 		// handle mouse and keyboard events
+		clock.restart();
 		eventLoop(renderer);
+		eventLoop_ms_time.newSample(clock.getElapsedTime().asMilliseconds());
 
 		// update world
+		clock.restart();
 		update();
+		update_ms_time.newSample(clock.getElapsedTime().asMilliseconds());
 
 		// render graphics
+		clock.restart();
 		render(renderer);
+		render_ms_time.newSample(clock.getElapsedTime().asMilliseconds());
 
 		// update time
 		time.update();
@@ -168,6 +176,7 @@ void Simulation::eventLoop(sf::RenderWindow &renderer) {
 				renderer.setView(view);
 			}
 			break;
+
 		case sf::Event::KeyPressed:
 			switch (event.key.code) {
 			case sf::Keyboard::Up: // move camera up
@@ -283,7 +292,10 @@ void Simulation::render(sf::RenderWindow &renderer) {
 		ss << "Ball Strategy: " << this->environment.getCurrentBallCollissionStrategyName() << "\n";
 		ss << "Gravity Forces: " << (this->environment.settings.gravity_forces ? "enabled" : "disabled") << "\n";
 		ss << "Simulation speed: " << this->time.getTimeFactor() << "\n";
-		ss << "Current Tool: " << this->current_tool->name;
+		ss << "Current Tool: " << this->current_tool->name << "\n";
+		ss << "Event loop time: " << this->eventLoop_ms_time.getAverage() << "ms\n";
+		ss << "Update time: " << this->update_ms_time.getAverage() << "ms\n";
+		ss << "Render time: " << this->render_ms_time.getAverage() << "ms\n";
 		this->drawText(renderer, 10, 10, ss.str());
 	}
 
@@ -313,6 +325,7 @@ void Simulation::setTool(const int id) {
 void Simulation::drawBalls(sf::RenderWindow &renderer, const std::vector<Ball>& balls) {
 	sf::CircleShape circle;
 	for (const Ball &ball : balls) {
+		if (!Utils::isBallVisable(view, ball)) continue; // skip ball if is not on screen
 		circle.setTexture(&this->ball_textures[ball.texture_id]);
 		circle.setRadius(static_cast<float>(ball.r));
 		circle.setOrigin(static_cast<float>(circle.getRadius()), static_cast<float>(circle.getRadius()));

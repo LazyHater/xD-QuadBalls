@@ -2,11 +2,11 @@
 
 #include <SFML/Graphics.hpp>
 
-class Time
+class FpsHandler
 {
 public:
-	Time();
-	~Time();
+	FpsHandler();
+	~FpsHandler();
 
 	void update();
 

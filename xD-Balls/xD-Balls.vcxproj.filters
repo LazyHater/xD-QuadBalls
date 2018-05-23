@@ -72,7 +72,10 @@
     <ClCompile Include="Tool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Time.cpp">
+    <ClCompile Include="FpsHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AverageFilter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -122,9 +125,6 @@
     <ClInclude Include="ctpl_stl.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Time.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BallTool.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -138,6 +138,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Tool.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FpsHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AverageFilter.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

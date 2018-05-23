@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AverageFilter.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="BallCollissionStrategy.cpp" />
     <ClCompile Include="BallSpawner.cpp" />
@@ -35,12 +36,13 @@
     <ClCompile Include="Rectangle.cpp" />
     <ClCompile Include="RectangleTool.cpp" />
     <ClCompile Include="Simulation.cpp" />
-    <ClCompile Include="Time.cpp" />
+    <ClCompile Include="FpsHandler.cpp" />
     <ClCompile Include="Tool.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AverageFilter.hpp" />
     <ClInclude Include="Ball.hpp" />
     <ClInclude Include="BallCollissionStrategy.hpp" />
     <ClInclude Include="BallSpawner.hpp" />
@@ -58,7 +60,7 @@
     <ClInclude Include="Rectangle.hpp" />
     <ClInclude Include="RectangleTool.hpp" />
     <ClInclude Include="Simulation.hpp" />
-    <ClInclude Include="Time.hpp" />
+    <ClInclude Include="FpsHandler.hpp" />
     <ClInclude Include="Tool.hpp" />
     <ClInclude Include="Utils.hpp" />
     <ClInclude Include="Vector2D.hpp" />

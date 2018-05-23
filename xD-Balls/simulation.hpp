@@ -6,10 +6,11 @@
 
 #include "Environment.hpp"
 #include "Tool.hpp"
-#include "Time.hpp"
+#include "FpsHandler.hpp"
 #include "BallTool.hpp"
 #include "RectangleTool.hpp"
 #include "LineTool.hpp"
+#include "AverageFilter.hpp"
 
 using namespace std;
 
@@ -52,11 +53,15 @@ private:
 	sf::Font font;
 	bool print_debug = true;
 	bool print_help = false;
-	Time time;
+	FpsHandler time;
 	Environment environment;
 	Tool *current_tool;
 
 	double scale = 1.0f;
+
+	AverageFilter<sf::Int32> eventLoop_ms_time;
+	AverageFilter<sf::Int32> update_ms_time;
+	AverageFilter<sf::Int32> render_ms_time;
 
 	void update();
 	void loadAssets();
