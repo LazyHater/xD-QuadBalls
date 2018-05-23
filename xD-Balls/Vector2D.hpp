@@ -2,37 +2,39 @@
 #include <iostream>
 #include <cmath>
 
-class Vector2D {
+class Vector2D
+{
 public:
-	float x, y;
+	double x, y;
 
 	Vector2D();
 	Vector2D(const Vector2D &v);
-	Vector2D(float x, float y);	
+	Vector2D(double x, double y);
+	~Vector2D();
 	
-	void set(float x, float y);		// just x and y
-	void setTryg(float mag, float angle); //magnitude and angle
+	void set(double x, double y);
+	void setTryg(double mag, double angle);
 	void add(Vector2D v);
-	float distance(Vector2D v); // calc distance
-	static float distance(Vector2D v1, Vector2D v2);
+	double distance(Vector2D v);
+	static double distance(Vector2D v1, Vector2D v2);
 	void swap(Vector2D &v);
-	float magnitude();
+	double magnitude();
 	void normalize();
-	float scalar(Vector2D v);
-	void rotate(float alpha);
-	float angle(Vector2D v);
+	double scalar(Vector2D v);
+	void rotate(double alpha);
+	double angle(Vector2D v);
 	Vector2D negate();
 
 	Vector2D operator!() const;
-	Vector2D operator*(const float f) const;
-	float operator*(const Vector2D v) const;
-	Vector2D operator/(const float f) const;
+	Vector2D operator*(const double f) const;
+	double operator*(const Vector2D v) const;
+	Vector2D operator/(const double f) const;
 	Vector2D operator+(const Vector2D v) const;
 	Vector2D operator-(const Vector2D v) const;
 	Vector2D& operator+=(const Vector2D v);
 	Vector2D& operator-=(const Vector2D v);
-	Vector2D& operator/=(const float f);
-	Vector2D& operator*=(const float f);
+	Vector2D& operator/=(const double f);
+	Vector2D& operator*=(const double f);
 	bool operator==(const Vector2D v);
 	friend std::ostream & operator <<(std::ostream & s, const Vector2D & v);
 };

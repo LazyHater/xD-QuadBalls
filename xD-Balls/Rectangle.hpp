@@ -2,20 +2,23 @@
 #include "Object.hpp"
 #include "Vector2D.hpp"
 
-class Rectangle : public Object {
+class Rectangle : public Object
+{
 public:
 	struct rectangle {
-		float x, y, w, h;
+		double x, y, w, h;
 	} rect;
 
 	Rectangle();
-	Rectangle(Vector2D center, float width, float height);
-	Rectangle(Vector2D v1, Vector2D v2);
-	Rectangle(float x1, float y1, float x2, float y2);
+	~Rectangle();
+	
+	explicit Rectangle(const Vector2D center, const double width, const double height);
+	explicit Rectangle(const Vector2D v1, const Vector2D v2);
+	explicit Rectangle(const double x1, const double y1, const double x2, const double y2);
 
-	virtual void move(Vector2D delta);
-	void set(Vector2D v1, Vector2D v2);
-	void set(Vector2D center, float width, float height);
-	virtual void update(float delta_t);
-	bool isIn(Vector2D v);
+	void move(const Vector2D& delta);
+	void set(const Vector2D& v1, const Vector2D& v2);
+	void set(const Vector2D& center, const double width, const double height);
+	virtual void update(const double delta_t) override;
+	bool isIn(const Vector2D& v) const;
 };

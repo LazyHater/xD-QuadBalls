@@ -3,22 +3,25 @@
 
 #include "Rectangle.hpp"
 
-class Line : public Object {
+class Line : public Object
+{
 public:
 	Vector2D p1, p2;
 	Vector2D dirVec, norVec;
 	Rectangle collideBox;
-	float angle, length, width = 2.0f;
+	double angle;
+	double length = 0;
+	double width = 2.0f;
 
 	Line();
-	Line(const Line &l);
-	Line(Vector2D p1, Vector2D p2, sf::Color color);
+	~Line();
+	explicit Line(const Line &l);
+	explicit Line(const Vector2D p1, const Vector2D p2, const sf::Color color);
 
-	void set(Vector2D p1, Vector2D p2);
+	void set(const Vector2D& p1, const Vector2D& p2);
 
-	virtual void move(Vector2D delta);
-	void update();
-	virtual void update(float delta_t);
-	float distance(Vector2D p);
-
+	void move(const Vector2D& delta);
+	virtual void update(const double delta_t) override;
+	void updateConstants();
+	double distance(const Vector2D& v) const;
 };

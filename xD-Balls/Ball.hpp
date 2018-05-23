@@ -1,23 +1,23 @@
 #pragma once
 #include "Object.hpp"
 
-class Ball : public Object {
+class Ball : public Object
+{
 public:
 	static int n;
 
-	float r;
-	float m;
+	double r;
+	double m;
 	bool collided = false;
-
-	float bounce_factor;
-
-	int texture_id = 0;
+	double bounce_factor;
+	unsigned int texture_id = 0;
 
 	Ball();
-	Ball(const Ball  &ball);
-	Ball(float x, float y, sf::Color c = sf::Color::Blue, int texture_id = 0);
-	Ball(Vector2D v, sf::Color c = sf::Color::Blue);
 	~Ball();
 
-	virtual void update(float delta_t);
+	explicit Ball(const Ball  &ball);
+	explicit Ball(double x, double y, sf::Color c = sf::Color::Blue, int texture_id = 0);
+	explicit Ball(Vector2D v, sf::Color c = sf::Color::Blue);
+
+	virtual void update(double delta_t);
 };

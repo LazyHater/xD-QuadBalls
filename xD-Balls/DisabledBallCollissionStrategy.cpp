@@ -7,10 +7,6 @@ DisabledBallCollissionStrategy::DisabledBallCollissionStrategy() : BallCollissio
 }
 
 
-DisabledBallCollissionStrategy::~DisabledBallCollissionStrategy()
-{
-}
+DisabledBallCollissionStrategy::~DisabledBallCollissionStrategy() = default;
 
-void DisabledBallCollissionStrategy::handle(std::vector<Ball>& balls)
-{
-}
+void DisabledBallCollissionStrategy::handle(std::vector<Ball>& balls) {}

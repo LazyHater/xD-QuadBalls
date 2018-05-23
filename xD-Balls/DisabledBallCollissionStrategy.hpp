@@ -7,7 +7,6 @@ public:
 	DisabledBallCollissionStrategy();
 	virtual ~DisabledBallCollissionStrategy();
 
-	// Inherited via BallCollissionStrategy
 	virtual void handle(std::vector<Ball>& balls) override;
 };
 

@@ -5,15 +5,16 @@
 #include "Ball.hpp"
 #include "Rectangle.hpp"
 
-class BallSpawner {
+class BallSpawner
+{
 public:
 	std::vector<Ball> balls;
 	Vector2D position;
-	int texture_max_id;
+	size_t texture_max_id;
 
-	bool ball_to_ball_bounce = false;
+	BallSpawner();
+	~BallSpawner();
 
-	void deployBalls(const Ball source, int n, bool random_velocity = true, bool random_radius = false, bool random_color = true, int texture_max_id = 2);
-
-	void update(float delta_t);
+	void deployBalls(const Ball source, int n, bool random_velocity = true, bool random_radius = false, bool random_color = true, size_t texture_max_id = 2);
+	void update(double delta_t);
 };

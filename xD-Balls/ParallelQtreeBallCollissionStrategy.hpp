@@ -1,7 +1,10 @@
 #pragma once
-#include "QtreeBallCollissionStrategy.hpp"
 #include "ctpl_stl.hpp"
+
+#include "QtreeBallCollissionStrategy.hpp"
 #include "Rectangle.hpp"
+#include "Qtree.hpp"
+
 
 class ParallelQtreeBallCollissionStrategy :
 	public QtreeBallCollissionStrategy
@@ -15,5 +18,7 @@ public:
 
 private:
 	ctpl::thread_pool* p;
+
+	static void helper(int id, tml::qtree<double, Ball*>* tree, std::vector<Ball>* balls, int from, int to);
 };
 

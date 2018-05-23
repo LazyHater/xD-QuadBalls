@@ -1,10 +1,39 @@
-#include <cmath>
+#include "Utils.hpp"
 
-float randTo(float to) {
-	return static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / to));
+#include <chrono>
+#include <random>
+#include <iostream>
+
+std::mt19937 & Utils::get() {
+	return mt;
 }
 
-float randFromTo(float from, float to)
-{
-	return from + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (to - from)));
+double Utils::dRand(const double min, const double max) {
+	std::uniform_real_distribution<double> dis(min, max);
+	return dis(Instance().get());
+}
+
+int Utils::rand(const int min, const int max) {
+	std::uniform_int_distribution<int> dis(min, max);
+	return dis(Instance().get());
+}
+
+Utils::Utils() {
+	std::random_device rd;
+
+	if (rd.entropy() != 0) {
+		mt.seed(rd());
+	}
+	else {
+		auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+		mt.seed(static_cast<unsigned int>(seed));
+	}
+}
+
+Utils::~Utils() {
+}
+
+Utils & Utils::Instance() {
+	static Utils s;
+	return s;
 }

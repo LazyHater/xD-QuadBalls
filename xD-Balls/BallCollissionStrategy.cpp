@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include "BallCollissionStrategy.hpp"
 #include "Utils.hpp"
 
@@ -8,7 +10,7 @@ void BallCollissionStrategy::ballsCollision(Ball & ball_1, Ball & ball_2)
 		ball_1.velocity.swap(ball_2.velocity);
 	}
 	else {
-		float mpm = ball_1.m + ball_2.m;
+		double mpm = ball_1.m + ball_2.m;
 		Vector2D v1(ball_1.velocity);
 		Vector2D v2(ball_2.velocity);
 
@@ -24,19 +26,19 @@ void BallCollissionStrategy::ballsCollision(Ball & ball_1, Ball & ball_2)
 	*/
 }
 
-void BallCollissionStrategy::plowBalls(Ball & ball_1, Ball & ball_2, float distance)
+void BallCollissionStrategy::plowBalls(Ball & ball_1, Ball & ball_2, double distance)
 {
 	Vector2D delta;
-	float how_far = (ball_1.r + ball_2.r - distance);
+	double how_far = (ball_1.r + ball_2.r - distance);
 
-	if (ball_2.position == ball_1.position) {
-		delta.setTryg(1.0, randFromTo(0, M_PI * 2));
+	if (ball_2.position == ball_1.position) {	
+		delta.setTryg(1.0, Utils::dRand(0, M_PI * 2));
 	}
 	else {
 		delta = ball_2.position - ball_1.position;
 		delta.normalize();
 	}
-	float temp = how_far / (ball_1.m + ball_2.m);// d/(m+M)
+	double temp = how_far / (ball_1.m + ball_2.m);// d/(m+M)
 
 	ball_1.position -= delta * (temp*ball_2.m);
 	ball_2.position += delta * (temp*ball_1.m);
@@ -47,6 +49,4 @@ BallCollissionStrategy::BallCollissionStrategy(std::string name) : name(name)
 {
 }
 
-BallCollissionStrategy::~BallCollissionStrategy()
-{
-}
+BallCollissionStrategy::~BallCollissionStrategy() = default;

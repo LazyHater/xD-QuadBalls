@@ -6,7 +6,7 @@
 class BallCollissionStrategy
 {
 public:
-	BallCollissionStrategy(std::string name);
+	explicit BallCollissionStrategy(std::string name);
 	~BallCollissionStrategy();
 
 	virtual void handle(std::vector<Ball>& balls) = 0;
@@ -14,7 +14,6 @@ public:
 
 protected:
 	static void ballsCollision(Ball &ball_1, Ball &ball_2);
-	static void plowBalls(Ball &ball_1, Ball &ball_2, float distance);
-
+	static void plowBalls(Ball &ball_1, Ball &ball_2, double distance);
 };
 

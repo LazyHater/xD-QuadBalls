@@ -1,7 +1,10 @@
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 #include "Environment.hpp"
 #include "NaiveBallCollissionStrategy.hpp"
 #include "QtreeBallCollissionStrategy.hpp"
-#include "QtreeBallCollissionStrategy.hpp"
+#include "ParallelQtreeBallCollissionStrategy.hpp"
 
 Environment::Environment(Rectangle box) : 
 	bbox(box), 
@@ -10,13 +13,6 @@ Environment::Environment(Rectangle box) :
 {
 	this->bbox.color = sf::Color(255, 0, 0);
 	current_ball_strategy = &this->qtree_ball_strategy;
-}
-
-void Environment::create(Rectangle box) {
-	this->bbox.color = sf::Color(255, 0, 0);
-	BSpwn.balls.clear();
-	lines.clear();
-	rectangles.clear();
 }
 
 void Environment::handleCollisionWithScreen(std::vector<Ball>& balls) {
@@ -45,10 +41,10 @@ void Environment::handleCollisionWithScreen(std::vector<Ball>& balls) {
 }
 
 void Environment::handleCollisionWithLines(std::vector<Ball>& balls, std::vector<Line> lines) {
-	for (Line line : lines) {
-		for (Ball &ball : balls) {
+	for (Line& line : lines) {
+		for (Ball& ball : balls) {
 			if (line.collideBox.isIn(ball.position)) {
-				float distance = line.distance(ball.position) - line.width;
+				double distance = line.distance(ball.position) - line.width;
 				if (distance < ball.r) {
 					ball.velocity = ball.velocity - line.norVec*
 						2.0*(ball.velocity*line.norVec); //R=V-2N(N*V)
@@ -97,13 +93,13 @@ void Environment::handleGravityForces(std::vector<Ball>& balls) {
 
 	for (Ball &ball : balls)  ball.acceleration = Vector2D(0, 0);
 
-	int temp = balls.size();
-	for (int i = 0; i < temp - 1; i++) {
-		for (int j = i + 1; j < temp; j++) {
-			float r = Vector2D::distance(balls[i].position, balls[j].position);
+	size_t temp = balls.size();
+	for (size_t i = 0; i < temp - 1; i++) {
+		for (size_t j = i + 1; j < temp; j++) {
+			double r = Vector2D::distance(balls[i].position, balls[j].position);
 			if (r <= balls[i].r + balls[j].r) r = balls[i].r + balls[j].r;
 
-			float force = settings.G*(balls[i].m*balls[j].m) / (r*r); //G*(m1*m2)/r^2
+			double force = settings.G*(balls[i].m*balls[j].m) / (r*r); //G*(m1*m2)/r^2
 			//if (force > settings.force_max) force = settings.force_max;
 
 			Vector2D dir_vec = balls[j].position - balls[i].position; // vector from first ball to second
@@ -115,22 +111,19 @@ void Environment::handleGravityForces(std::vector<Ball>& balls) {
 			balls[j].acceleration += !force_vec / balls[j].m;
 		}
 	}
-
 }
 
-void Environment::update(float delta_t) {
-	//float max_time = 1.f / 60.f;
+void Environment::update(const double delta_t) {
+	//double max_time = 1.f / 60.f;
 	//if (delta_t > max_time) delta_t = max_time;	
 	
-		for (int i = 0; i < settings.precision_of_calcs; i++) {
+		for (unsigned int i = 0; i < settings.precision_of_calcs; i++) {
 			if (settings.gravity_forces) {
 				handleGravityForces(BSpwn.balls);
 			}
 
-			if (settings.ball_to_ball_collisions) {
-				current_ball_strategy->handle(BSpwn.balls);
-			}
-
+		    current_ball_strategy->handle(BSpwn.balls);
+			
 			handleCollisionWithScreen(BSpwn.balls);
 			handleCollisionWithLines(BSpwn.balls, lines);
 			handleCollisionWithRectangles(BSpwn.balls, rectangles);
@@ -139,8 +132,6 @@ void Environment::update(float delta_t) {
 				ball.velocity += settings.gravity_vector*delta_t / settings.precision_of_calcs;
 			}
 		}
-	
-
 }
 
 void Environment::setCurrentBallCollissionStrategy(CollisionStrategyType type)

@@ -31,7 +31,7 @@ void QtreeBallCollissionStrategy::handle(std::vector<Ball>& balls)
 		for (auto node : result) {
 			Ball* b2 = node->data;
 
-			float distance = b1->position.distance(b2->position);
+			double distance = b1->position.distance(b2->position);
 			if (distance < b1->r + b2->r) {
 				plowBalls(*b1, *b2, distance);
 				ballsCollision(*b1, *b2);

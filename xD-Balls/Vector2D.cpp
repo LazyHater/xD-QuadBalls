@@ -2,16 +2,18 @@
 
 Vector2D::Vector2D(const Vector2D &v) : x(v.x), y(v.y) {}
 
-Vector2D::Vector2D(float x, float y) : x(x), y(y) {}
+Vector2D::Vector2D(double x, double y) : x(x), y(y) {}
+
+Vector2D::~Vector2D() = default;
 
 Vector2D::Vector2D() : x(0), y(0) {}
 
-void Vector2D::set(float x, float y) {
+void Vector2D::set(double x, double y) {
 	this->x = x;
 	this->y = y;
 }
 
-void Vector2D::setTryg(float mag, float angle) {
+void Vector2D::setTryg(double mag, double angle) {
 	this->set(mag*cos(angle), -mag*sin(angle));
 }
 
@@ -19,15 +21,15 @@ void Vector2D::add(Vector2D v) {
 	this->set(x + v.x, y + v.y);
 }
 
-float Vector2D::distance(Vector2D v) {
-	float a = v.x - x;
-	float b = v.y - y;
+double Vector2D::distance(Vector2D v) {
+	double a = v.x - x;
+	double b = v.y - y;
 	return sqrt(a*a+b*b);
 }
 
-float Vector2D::distance(Vector2D v1, Vector2D v2) {
-	float a = v1.x - v2.x;
-	float b = v1.y - v2.y;
+double Vector2D::distance(Vector2D v1, Vector2D v2) {
+	double a = v1.x - v2.x;
+	double b = v1.y - v2.y;
 	return sqrt(a*a + b*b);
 }
 
@@ -36,21 +38,21 @@ void Vector2D::swap(Vector2D &v) {
 	v = *this;
 	*this = buff;
 }
-float Vector2D::magnitude() {
+double Vector2D::magnitude() {
 	return sqrt(x*x+y*y);
 }
 
 void  Vector2D::normalize() {
-	float mag = sqrt(x*x+y*y);
-	this->set(x / (float)mag, y / (float)mag);
+	double mag = sqrt(x*x+y*y);
+	this->set(x / (double)mag, y / (double)mag);
 }
 
-float Vector2D::scalar(Vector2D v) {
+double Vector2D::scalar(Vector2D v) {
 	return (x*v.x + y*v.y);
 }
 
-void Vector2D::rotate(float alpha) {
-	float tempx=x, tempy=y;
+void Vector2D::rotate(double alpha) {
+	double tempx=x, tempy=y;
 	x = tempx*cos(alpha) - tempy*sin(alpha);
 	y = tempx*sin(alpha) + tempy*cos(alpha);
 }
@@ -60,24 +62,24 @@ Vector2D Vector2D::negate() {
 	return *this;
 }
 
-float Vector2D::angle(Vector2D v) {
-	float scalar = this->scalar(v);
-	return acos(scalar / (float)(this->magnitude()*v.magnitude()));
+double Vector2D::angle(Vector2D v) {
+	double scalar = this->scalar(v);
+	return acos(scalar / (double)(this->magnitude()*v.magnitude()));
 }
 
 Vector2D Vector2D::operator!() const {
 	return Vector2D(-x,-y);
 }
 
-Vector2D Vector2D::operator*(const float f) const {
+Vector2D Vector2D::operator*(const double f) const {
 	return Vector2D(x*f, y*f);
 }
 
-Vector2D Vector2D::operator/(const float f) const {
+Vector2D Vector2D::operator/(const double f) const {
 	return Vector2D(x/f, y/f);
 }
 
-float Vector2D::operator*(const Vector2D v) const {
+double Vector2D::operator*(const Vector2D v) const {
 	return (x*v.x + y*v.y);
 }
 
@@ -89,12 +91,12 @@ Vector2D Vector2D::operator-(const Vector2D v) const {
 	return Vector2D(x - v.x, y - v.y);
 }
 
-Vector2D& Vector2D::operator/=(const float f) {
+Vector2D& Vector2D::operator/=(const double f) {
 	this->set(x/f, y/f);
 	return  *this;
 }
 
-Vector2D& Vector2D::operator*=(const float f) {
+Vector2D& Vector2D::operator*=(const double f) {
 	this->set(x * f, y * f);
 	return  *this;
 }

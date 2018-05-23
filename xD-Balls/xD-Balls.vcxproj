@@ -22,15 +22,21 @@
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="BallCollissionStrategy.cpp" />
     <ClCompile Include="BallSpawner.cpp" />
+    <ClCompile Include="BallTool.cpp" />
     <ClCompile Include="DisabledBallCollissionStrategy.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="Line.cpp" />
+    <ClCompile Include="LineTool.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NaiveBallCollissionStrategy.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="ParallelQtreeBallCollissionStrategy.cpp" />
     <ClCompile Include="QtreeBallCollissionStrategy.cpp" />
     <ClCompile Include="Rectangle.cpp" />
-    <ClCompile Include="simulation.cpp" />
+    <ClCompile Include="RectangleTool.cpp" />
+    <ClCompile Include="Simulation.cpp" />
+    <ClCompile Include="Time.cpp" />
+    <ClCompile Include="Tool.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Vector2D.cpp" />
   </ItemGroup>
@@ -38,18 +44,22 @@
     <ClInclude Include="Ball.hpp" />
     <ClInclude Include="BallCollissionStrategy.hpp" />
     <ClInclude Include="BallSpawner.hpp" />
+    <ClInclude Include="BallTool.hpp" />
     <ClInclude Include="ctpl_stl.hpp" />
     <ClInclude Include="DisabledBallCollissionStrategy.hpp" />
     <ClInclude Include="Environment.hpp" />
     <ClInclude Include="Line.hpp" />
+    <ClInclude Include="LineTool.hpp" />
     <ClInclude Include="NaiveBallCollissionStrategy.hpp" />
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="ParallelQtreeBallCollissionStrategy.hpp" />
     <ClInclude Include="Qtree.hpp" />
     <ClInclude Include="QtreeBallCollissionStrategy.hpp" />
     <ClInclude Include="Rectangle.hpp" />
-    <ClInclude Include="simulation.hpp" />
-    <ClInclude Include="tools.hpp" />
+    <ClInclude Include="RectangleTool.hpp" />
+    <ClInclude Include="Simulation.hpp" />
+    <ClInclude Include="Time.hpp" />
+    <ClInclude Include="Tool.hpp" />
     <ClInclude Include="Utils.hpp" />
     <ClInclude Include="Vector2D.hpp" />
   </ItemGroup>
@@ -156,12 +166,13 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\SFML-2.5.0\include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>C:\SFML-2.5.0\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-window-2.lib;sfml-system-2.lib;sfml-graphics-2.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfml-window.lib;sfml-system.lib;sfml-graphics.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
