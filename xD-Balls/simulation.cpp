@@ -8,24 +8,25 @@
 const std::string HELP_MSG(
 	R"(Navigation
 Arrows - navigate
-Scrool - up/down - zoom in/out
 Scrool - hold - navigate
-LPM - on press - choose direction and velocity for new balls
-LPM - on release - deploy new balls
-PPM - reset simulation
+Scrool - up/down - zoom in/out
+LPM - tool specific
+PPM - tool specific
 
-Funcionality
+Utility
 H - print this help
 D - print debug info
 T - render qtree
-P - pause simulation
+F5 - quick save of simulation state
+F7 - quick load of simulation state
+ESC - quit simulation
+
+Simulation
+P/space - pause simulation
 R - reset simulation
 G - enable/disable gravity forces
 + - increase simulation speed
 - - decrease simulation speed
-F5 - quick save of simulation state
-F7 - quick load of simulation state
-ESC - quit simulation
 
 Collisions
 1 - set collision strategy to disable
@@ -44,17 +45,17 @@ A - set tool to attraction_tool
 Simulation::Simulation(const sf::VideoMode vm, const bool full_screen) :
 	video_mode(vm),
 	full_screen(full_screen),
-	environment(Rectangle(0, 0, vm.width, vm.height)),
-	ball_tool(&environment),
-	rectangle_tool(&environment),
-	line_tool(&environment),
-	attraction_tool(&environment)
+	world(Rectangle(0, 0, vm.width, vm.height)),
+	ball_tool(&world),
+	rectangle_tool(&world),
+	line_tool(&world),
+	attraction_tool(&world),
+	current_tool(&ball_tool)
 {
 	ball_tool.setBallsMass(1000);
 	ball_tool.setBallsRadius(2);
 	ball_tool.setBallsBounceFactor(1);
 	ball_tool.setBallsPerDeploy(1000);
-	current_tool = &ball_tool;
 
 	loadAssets();
 	view.reset(sf::FloatRect(0, 0, static_cast<float>(vm.width), static_cast<float>(vm.height)));
@@ -82,10 +83,10 @@ Simulation::~Simulation() = default;
 
 void Simulation::saveSimState(const std::string s) const {
 	ofstream ofs(s, ios::binary);
-	size_t n = environment.BSpwn.balls.size();
+	size_t n = world.BSpwn.balls.size();
 	ofs.write((char *)&n, sizeof(n));
 	for (int i = 0; i < n; i++) {
-		ofs.write((char *)&environment.BSpwn.balls[i], sizeof(Ball));
+		ofs.write((char *)&world.BSpwn.balls[i], sizeof(Ball));
 	}
 	ofs.close();
 }
@@ -95,10 +96,10 @@ void Simulation::loadSimState(const std::string s) {
 	size_t n;
 	ifs.read((char *)&n, sizeof(n));
 
-	environment.BSpwn.balls.clear();
-	environment.BSpwn.balls.resize(n);
+	world.BSpwn.balls.clear();
+	world.BSpwn.balls.resize(n);
 	for (int i = 0; i < n; i++) {
-		ifs.read((char *)&environment.BSpwn.balls[i], sizeof(Ball));
+		ifs.read((char *)&world.BSpwn.balls[i], sizeof(Ball));
 	}
 	ifs.close();
 }
@@ -143,7 +144,9 @@ void Simulation::mainLoop() {
 }
 
 void Simulation::update() {
-	environment.update(time.getDeltaT()*((this->paused) ? 0 : 1.f));
+	double dt = time.getDeltaT()*((this->paused) ? 0 : 1.f);
+	world.update(dt);
+	current_tool->update(dt);
 }
 
 void Simulation::eventLoop(sf::RenderWindow &renderer) {
@@ -158,7 +161,7 @@ void Simulation::eventLoop(sf::RenderWindow &renderer) {
 		case sf::Event::MouseButtonReleased:
 		case sf::Event::MouseMoved:
 			static sf::Event::MouseMoveEvent prev_mouse_move;
-			current_tool->update(event, renderer);
+			current_tool->handleEvent(event, renderer);
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Middle)) {
 				view.move(static_cast<float>((prev_mouse_move.x - event.mouseMove.x)*scale),
 					static_cast<float>((prev_mouse_move.y - event.mouseMove.y)*scale));
@@ -230,15 +233,16 @@ void Simulation::eventLoop(sf::RenderWindow &renderer) {
 				break;
 
 			case sf::Keyboard::P: // pause
+			case sf::Keyboard::Space: 
 				paused = !paused;
 				break;
 
 			case sf::Keyboard::R: // pause
-				this->environment.BSpwn.balls.clear();
+				this->world.BSpwn.balls.clear();
 				break;
 
 			case sf::Keyboard::G: // enable / disable gravity
-				this->environment.settings.gravity_forces = !this->environment.settings.gravity_forces;
+				this->world.settings.gravity_forces = !this->world.settings.gravity_forces;
 				break;
 
 			case sf::Keyboard::B: // set tool to ball_tool
@@ -266,19 +270,19 @@ void Simulation::eventLoop(sf::RenderWindow &renderer) {
 				break;
 
 			case sf::Keyboard::Num1: // set collision strategy to disable
-				this->environment.setCurrentBallCollissionStrategy(Environment::CollisionStrategyType::Disabled);
+				this->world.setCurrentBallCollissionStrategy(World::CollisionStrategyType::Disabled);
 				break;
 
 			case sf::Keyboard::Num2: // set collision strategy to naive
-				this->environment.setCurrentBallCollissionStrategy(Environment::CollisionStrategyType::Naive);
+				this->world.setCurrentBallCollissionStrategy(World::CollisionStrategyType::Naive);
 				break;
 
 			case sf::Keyboard::Num3: // set collision strategy to qtree
-				this->environment.setCurrentBallCollissionStrategy(Environment::CollisionStrategyType::Qtree);
+				this->world.setCurrentBallCollissionStrategy(World::CollisionStrategyType::Qtree);
 				break;
 
 			case sf::Keyboard::Num4: // set collision strategy to parallel_qtree
-				this->environment.setCurrentBallCollissionStrategy(Environment::CollisionStrategyType::ParallelQtree);
+				this->world.setCurrentBallCollissionStrategy(World::CollisionStrategyType::ParallelQtree);
 				break;
 
 			default:
@@ -292,30 +296,30 @@ void Simulation::eventLoop(sf::RenderWindow &renderer) {
 
 void Simulation::render(sf::RenderWindow &renderer) {
 	renderer.clear();
-	drawBalls(renderer, environment.BSpwn.balls);
-	drawRectangles(renderer, environment.rectangles);
-	drawLines(renderer, environment.lines);
+	renderBalls(renderer, world.BSpwn.balls);
+	renderRectangles(renderer, world.rectangles);
+	renderLines(renderer, world.lines);
 	current_tool->draw(renderer);
 	if (this->draw_qtree) {
-		drawQtree(renderer, environment.BSpwn.balls);
+		renderQtree(renderer, world.BSpwn.balls);
 	}
 
 	if (this->print_debug) { // print debug info
 		std::ostringstream ss;
 		ss << "FPS: " << time.getAvgFps() << "\n";
-		ss << "Balls N: " << this->environment.BSpwn.balls.size() << "\n";
-		ss << "Ball Strategy: " << this->environment.getCurrentBallCollissionStrategyName() << "\n";
-		ss << "Gravity Forces: " << (this->environment.settings.gravity_forces ? "enabled" : "disabled") << "\n";
+		ss << "Balls N: " << this->world.BSpwn.balls.size() << "\n";
+		ss << "Ball Strategy: " << this->world.getCurrentBallCollissionStrategyName() << "\n";
+		ss << "Gravity Forces: " << (this->world.settings.gravity_forces ? "enabled" : "disabled") << "\n";
 		ss << "Simulation speed: " << this->time.getTimeFactor() << "\n";
 		ss << "Current Tool: " << this->current_tool->name << "\n";
 		ss << "Event loop time: " << this->eventLoop_ms_time.getAverage() << "ms\n";
 		ss << "Update time: " << this->update_ms_time.getAverage() << "ms\n";
 		ss << "Render time: " << this->render_ms_time.getAverage() << "ms\n";
-		this->drawText(renderer, 10, 10, ss.str());
+		this->renderText(renderer, 10, 10, ss.str());
 	}
 
 	if (this->print_help) { // print help message
-		this->drawText(renderer, 10, 10, HELP_MSG);
+		this->renderText(renderer, 10, 10, HELP_MSG);
 	}
 	renderer.display();
 }
@@ -340,33 +344,35 @@ void Simulation::setTool(const int id) {
 	}
 }
 
-void Simulation::drawBalls(sf::RenderWindow &renderer, const std::vector<Ball>& balls) {
+void Simulation::renderBalls(sf::RenderWindow &renderer, const std::vector<Ball>& balls) {
 	sf::CircleShape circle;
 	for (const Ball &ball : balls) {
 		if (!Utils::isBallVisable(view, ball)) continue; // skip ball if is not on screen
+		float x = static_cast<float>(ball.position.x);
+		float y = static_cast<float>(ball.position.y);
+		float r = static_cast<float>(ball.r);
 		circle.setTexture(&this->ball_textures[ball.texture_id]);
-		circle.setRadius(static_cast<float>(ball.r));
-		circle.setOrigin(static_cast<float>(circle.getRadius()), static_cast<float>(circle.getRadius()));
-		circle.setPosition(static_cast<float>(ball.position.x), static_cast<float>(ball.position.y));
+		circle.setRadius(r);
+		circle.setPosition(x - r, y - r);
 		circle.setFillColor(ball.color);
 		renderer.draw(circle);
 	}
 }
 
-void Simulation::drawRectangles(sf::RenderWindow &renderer, const std::vector<Rectangle> &Rectangles) {
+void Simulation::renderRectangles(sf::RenderWindow &renderer, const std::vector<Rectangle> &Rectangles) {
 	sf::RectangleShape rect;
 	for (const Rectangle &rectangle : Rectangles) {
 		rect.setSize(sf::Vector2f(static_cast<float>(rectangle.rect.w), static_cast<float>(rectangle.rect.h)));
 		rect.setPosition(static_cast<float>(rectangle.rect.x), static_cast<float>(rectangle.rect.y));
 		rect.setFillColor(sf::Color(0, 0, 0, 0));
 		rect.setOutlineColor(rectangle.color);
-		rect.setOutlineThickness(10);
+		rect.setOutlineThickness(10.0f);
 		//rect.getOutlineColor
 		renderer.draw(rect);
 	}
 }
 
-void Simulation::drawLines(sf::RenderWindow &renderer, const std::vector<Line> &Lines) {
+void Simulation::renderLines(sf::RenderWindow &renderer, const std::vector<Line> &Lines) {
 	sf::RectangleShape rect;
 	for (const Line &line : Lines) {
 		rect.setSize(sf::Vector2f(static_cast<float>(line.length), static_cast<float>(line.width)));
@@ -377,7 +383,7 @@ void Simulation::drawLines(sf::RenderWindow &renderer, const std::vector<Line> &
 	}
 }
 
-void Simulation::drawText(sf::RenderWindow &renderer, const double x, const double y, const std::string s) {
+void Simulation::renderText(sf::RenderWindow &renderer, const double x, const double y, const std::string s) {
 	sf::View prev_state;
 	prev_state = renderer.getView();
 	renderer.setView(renderer.getDefaultView());
@@ -414,9 +420,9 @@ void renderTree(sf::RenderWindow& renderer, const tml::node<double, const Ball*>
 	}
 }
 
-void Simulation::drawQtree(sf::RenderWindow& renderer, const std::vector<Ball>& balls) {
+void Simulation::renderQtree(sf::RenderWindow& renderer, const std::vector<Ball>& balls) {
 
-	tml::qtree<double, const Ball*> tree(this->environment.bbox.rect.x, this->environment.bbox.rect.y, this->environment.bbox.rect.x + this->environment.bbox.rect.w, this->environment.bbox.rect.y + this->environment.bbox.rect.h);
+	tml::qtree<double, const Ball*> tree(this->world.bbox.rect.x, this->world.bbox.rect.y, this->world.bbox.rect.x + this->world.bbox.rect.w, this->world.bbox.rect.y + this->world.bbox.rect.h);
 	int fail_cnt = 0;
 
 	int balls_n = balls.size();

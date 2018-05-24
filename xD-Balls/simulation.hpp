@@ -4,7 +4,7 @@
 #include <fstream>
 #include <SFML/Graphics.hpp>
 
-#include "Environment.hpp"
+#include "World.hpp"
 #include "AverageFilter.hpp"
 #include "FpsHandler.hpp"
 
@@ -35,7 +35,7 @@ public:
 	inline void setNormalTimeFactor() { time.setTimeFactor(1.0f); }
 	inline void setFastTimeFactor() { time.setTimeFactor(10.0f); }
 	inline void setPrintDebug(const bool b) { print_debug = b; }
-	inline void setGravityForces(const bool b) { environment.settings.gravity_forces = b; }
+	inline void setGravityForces(const bool b) { world.settings.gravity_forces = b; }
 
 private:
 	BallTool ball_tool;
@@ -58,7 +58,7 @@ private:
 	bool print_help = false;
 	bool draw_qtree = false;
 	FpsHandler time;
-	Environment environment;
+	World world;
 	Tool *current_tool;
 
 	double scale = 1.0f;
@@ -72,12 +72,12 @@ private:
 	void update();
 	void render(sf::RenderWindow &renderer);
 
-	void drawBalls(sf::RenderWindow &renderer, const std::vector<Ball>& balls);
-	void drawRectangles(sf::RenderWindow &renderer, const std::vector<Rectangle> &Rectangles);
-	void drawLines(sf::RenderWindow &renderer, const std::vector<Line> &Lines);
+	void renderBalls(sf::RenderWindow &renderer, const std::vector<Ball>& balls);
+	void renderRectangles(sf::RenderWindow &renderer, const std::vector<Rectangle> &Rectangles);
+	void renderLines(sf::RenderWindow &renderer, const std::vector<Line> &Lines);
 
-	void drawQtree(sf::RenderWindow &renderer, const std::vector<Ball>& balls);
-	void drawText(sf::RenderWindow &renderer, const double x, const double y, const std::string s);
+	void renderQtree(sf::RenderWindow &renderer, const std::vector<Ball>& balls);
+	void renderText(sf::RenderWindow &renderer, const double x, const double y, const std::string s);
 };
 
 

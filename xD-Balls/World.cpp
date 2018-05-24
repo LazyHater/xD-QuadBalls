@@ -1,12 +1,12 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
-#include "Environment.hpp"
+#include "World.hpp"
 #include "NaiveBallCollissionStrategy.hpp"
 #include "QtreeBallCollissionStrategy.hpp"
 #include "ParallelQtreeBallCollissionStrategy.hpp"
 
-Environment::Environment(Rectangle box) : 
+World::World(Rectangle box) : 
 	bbox(box), 
 	qtree_ball_strategy(QtreeBallCollissionStrategy(box)), 
 	parallel_qtree_ball_strategy(ParallelQtreeBallCollissionStrategy(box)) 
@@ -15,7 +15,7 @@ Environment::Environment(Rectangle box) :
 	current_ball_strategy = &this->qtree_ball_strategy;
 }
 
-void Environment::handleCollisionWithScreen(std::vector<Ball>& balls) {
+void World::handleCollisionWithScreen(std::vector<Ball>& balls) {
 	for (Ball &ball : balls) {
 		if (ball.position.x + ball.r > bbox.rect.x + bbox.rect.w) {
 			ball.velocity.x = -ball.velocity.x;
@@ -40,7 +40,7 @@ void Environment::handleCollisionWithScreen(std::vector<Ball>& balls) {
 	}
 }
 
-void Environment::handleCollisionWithLines(std::vector<Ball>& balls, std::vector<Line> lines) {
+void World::handleCollisionWithLines(std::vector<Ball>& balls, std::vector<Line> lines) {
 	for (Line& line : lines) {
 		for (Ball& ball : balls) {
 			if (line.collideBox.isIn(ball.position)) {
@@ -59,7 +59,7 @@ void Environment::handleCollisionWithLines(std::vector<Ball>& balls, std::vector
 	}
 }
 
-void Environment::handleCollisionWithRectangles(std::vector<Ball>& balls, std::vector<Rectangle>& rectangles) {
+void World::handleCollisionWithRectangles(std::vector<Ball>& balls, std::vector<Rectangle>& rectangles) {
 	for (Rectangle &rectangle : rectangles) {
 		for (Ball &ball : balls) {
 			if ((abs(rectangle.position.x - ball.position.x)<ball.r + rectangle.rect.w / 2.0f)
@@ -89,7 +89,7 @@ void Environment::handleCollisionWithRectangles(std::vector<Ball>& balls, std::v
 	}
 }
 
-void Environment::handleGravityForces(std::vector<Ball>& balls) {
+void World::handleGravityForces(std::vector<Ball>& balls) {
 
 	for (Ball &ball : balls)  ball.acceleration = Vector2D(0, 0);
 
@@ -113,7 +113,7 @@ void Environment::handleGravityForces(std::vector<Ball>& balls) {
 	}
 }
 
-void Environment::update(const double delta_t) {
+void World::update(const double delta_t) {
 	//double max_time = 1.f / 60.f;
 	//if (delta_t > max_time) delta_t = max_time;	
 	
@@ -134,7 +134,7 @@ void Environment::update(const double delta_t) {
 		}
 }
 
-void Environment::setCurrentBallCollissionStrategy(CollisionStrategyType type)
+void World::setCurrentBallCollissionStrategy(CollisionStrategyType type)
 {
 	switch (type) {
 	case Disabled:

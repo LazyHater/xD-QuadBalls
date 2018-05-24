@@ -26,7 +26,7 @@
     <ClCompile Include="BallSpawner.cpp" />
     <ClCompile Include="BallTool.cpp" />
     <ClCompile Include="DisabledBallCollissionStrategy.cpp" />
-    <ClCompile Include="Environment.cpp" />
+    <ClCompile Include="World.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="LineTool.cpp" />
     <ClCompile Include="main.cpp" />
@@ -51,7 +51,7 @@
     <ClInclude Include="BallTool.hpp" />
     <ClInclude Include="ctpl_stl.hpp" />
     <ClInclude Include="DisabledBallCollissionStrategy.hpp" />
-    <ClInclude Include="Environment.hpp" />
+    <ClInclude Include="World.hpp" />
     <ClInclude Include="Line.hpp" />
     <ClInclude Include="LineTool.hpp" />
     <ClInclude Include="NaiveBallCollissionStrategy.hpp" />

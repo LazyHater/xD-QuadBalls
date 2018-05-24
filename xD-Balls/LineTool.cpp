@@ -2,7 +2,7 @@
 
 LineTool::~LineTool() = default;
 
-void LineTool::update(const sf::Event & event, const sf::RenderWindow & renderer) {
+void LineTool::handleEvent(const sf::Event & event, const sf::RenderWindow & renderer) {
 	switch (event.type) {
 	case sf::Event::MouseButtonPressed:
 		if (event.mouseButton.button == sf::Mouse::Left) {
@@ -14,9 +14,9 @@ void LineTool::update(const sf::Event & event, const sf::RenderWindow & renderer
 		}
 		else 	if (event.mouseButton.button == sf::Mouse::Right) {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-				e->lines.pop_back();
+				w->lines.pop_back();
 			else
-				e->lines.clear();
+				w->lines.clear();
 		}
 		break;
 	case sf::Event::MouseMoved:
@@ -30,7 +30,7 @@ void LineTool::update(const sf::Event & event, const sf::RenderWindow & renderer
 			draw_flag = false;
 			end_point = getLocalVector(event.mouseButton, renderer);
 			line.set(start_point, end_point);
-			e->lines.push_back(line);
+			w->lines.push_back(line);
 
 		}
 		break;
@@ -48,3 +48,5 @@ void LineTool::draw(sf::RenderWindow & renderer) {
 	rect.setFillColor(line.color);
 	renderer.draw(rect);
 }
+
+void LineTool::update(double dt) {}

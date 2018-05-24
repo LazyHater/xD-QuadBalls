@@ -1,13 +1,13 @@
 #include "BallTool.hpp"
 
-BallTool::BallTool(Environment* e) : Tool(e, "BallTool") {
+BallTool::BallTool(World* w) : Tool(w, "BallTool") {
 	template_ball.collided = false;
 	texture.loadFromFile("textures\\arrow.png");
 }
 
 BallTool::~BallTool() = default;
 
-void BallTool::update(const sf::Event & event, const sf::RenderWindow & renderer) {
+void BallTool::handleEvent(const sf::Event & event, const sf::RenderWindow & renderer) {
 	switch (event.type) {
 	case sf::Event::MouseButtonPressed:
 		if (event.mouseButton.button == sf::Mouse::Left) {
@@ -17,7 +17,7 @@ void BallTool::update(const sf::Event & event, const sf::RenderWindow & renderer
 			template_ball.position = start_point;
 			buffor.reserve(balls_per_deploy);
 
-			int temp = (e->settings.gravity_forces) ? 1 : balls_per_deploy;//thats just to temporary fix issue with spawning lots of balls with enabled gravity forces
+			int temp = (w->settings.gravity_forces) ? 1 : balls_per_deploy;//thats just to temporary fix issue with spawning lots of balls with enabled gravity forces
 
 			for (int i = 0; i < temp; i++) {
 				Ball ball(template_ball);
@@ -33,15 +33,15 @@ void BallTool::update(const sf::Event & event, const sf::RenderWindow & renderer
 			}
 		}
 		else 	if (event.mouseButton.button == sf::Mouse::Right) {
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && !e->BSpwn.balls.empty()) {
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && !w->BSpwn.balls.empty()) {
 				int temp = balls_per_deploy;//thats just to temporary fix issue with spawning lots of balls with enabled gravity forces
-				if (e->settings.gravity_forces)
+				if (w->settings.gravity_forces)
 					temp = 1;
 				for (int i = 0; i < temp; i++)
-					e->BSpwn.balls.pop_back();
+					w->BSpwn.balls.pop_back();
 			}
 			else {
-				e->BSpwn.balls.clear();
+				w->BSpwn.balls.clear();
 			}
 		}
 		break;
@@ -57,10 +57,10 @@ void BallTool::update(const sf::Event & event, const sf::RenderWindow & renderer
 			draw_flag = false;
 			end_point = getLocalVector(event.mouseButton, renderer);
 			additionalVelocity = start_point - end_point;
-			e->BSpwn.balls.reserve(buffor.size());
+			w->BSpwn.balls.reserve(buffor.size());
 			for (Ball &b : buffor) {
 				b.velocity += additionalVelocity;
-				e->BSpwn.balls.push_back(b);
+				w->BSpwn.balls.push_back(b);
 			}
 			buffor.clear();
 			additionalVelocity = Vector2D(0, 0);
@@ -92,3 +92,5 @@ void BallTool::draw(sf::RenderWindow & renderer) {
 	rect.setRotation(180.0f + atan2f(static_cast<float>((start_point - end_point).y), static_cast<float>((start_point - end_point).x)) * 180.0f / static_cast<float>(M_PI));
 	renderer.draw(rect);
 }
+
+void BallTool::update(double dt) {}

@@ -4,10 +4,11 @@
 class LineTool : public Tool
 {
 public:
-	LineTool(Environment *e) : Tool(e, "LineTool") {}
+	LineTool(World *w) : Tool(w, "LineTool") {}
 	virtual ~LineTool();
 
-	virtual void update(const sf::Event & event, const sf::RenderWindow & renderer) override;
+	virtual void update(double dt) override;
+	virtual void handleEvent(const sf::Event & event, const sf::RenderWindow & renderer) override;
 	virtual void draw(sf::RenderWindow & renderer) override;
 
 private:

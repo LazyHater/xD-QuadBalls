@@ -17,10 +17,10 @@ struct Settings
 	double force_max = 10000;	
 };
 
-class Environment
+class World
 {
 public:
-	explicit Environment(Rectangle bbox);
+	explicit World(Rectangle bbox);
 
 	enum CollisionStrategyType {
 		Disabled, Naive, Qtree, ParallelQtree

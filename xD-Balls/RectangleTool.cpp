@@ -2,7 +2,7 @@
 
 RectangleTool::~RectangleTool() = default;
 
-void RectangleTool::update(const sf::Event & event, const sf::RenderWindow & renderer) {
+void RectangleTool::handleEvent(const sf::Event & event, const sf::RenderWindow & renderer) {
 	switch (event.type) {
 	case sf::Event::MouseButtonPressed:
 		if (event.mouseButton.button == sf::Mouse::Left) {
@@ -14,9 +14,9 @@ void RectangleTool::update(const sf::Event & event, const sf::RenderWindow & ren
 		}
 		else 	if (event.mouseButton.button == sf::Mouse::Right) {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-				e->rectangles.pop_back();
+				w->rectangles.pop_back();
 			else
-				e->rectangles.clear();
+				w->rectangles.clear();
 		}
 
 		break;
@@ -29,7 +29,7 @@ void RectangleTool::update(const sf::Event & event, const sf::RenderWindow & ren
 			draw_flag = false;
 			end_point = getLocalVector(event.mouseButton, renderer);
 			rectangle.set(start_point, end_point);
-			e->rectangles.push_back(rectangle);
+			w->rectangles.push_back(rectangle);
 		}
 		break;
 	default:
@@ -45,3 +45,5 @@ void RectangleTool::draw(sf::RenderWindow & renderer) {
 	rect.setFillColor(rectangle.color);
 	renderer.draw(rect);
 }
+
+void RectangleTool::update(double dt) {}
