@@ -56,6 +56,7 @@ private:
 	sf::Font font;
 	bool print_debug = true;
 	bool print_help = false;
+	bool draw_qtree = false;
 	FpsHandler time;
 	Environment environment;
 	Tool *current_tool;
@@ -75,6 +76,7 @@ private:
 	void drawRectangles(sf::RenderWindow &renderer, const std::vector<Rectangle> &Rectangles);
 	void drawLines(sf::RenderWindow &renderer, const std::vector<Line> &Lines);
 
+	void drawQtree(sf::RenderWindow &renderer, const std::vector<Ball>& balls);
 	void drawText(sf::RenderWindow &renderer, const double x, const double y, const std::string s);
 };
 

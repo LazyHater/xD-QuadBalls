@@ -23,7 +23,7 @@ namespace tml {
 		COOR_TYPE x;        //coordinate x
 		COOR_TYPE y;        //coordinate y
 		DATA_TYPE data;     //user defined data
-	private:
+	//private: ;-;
 		friend class qtree<COOR_TYPE, DATA_TYPE>;
 		explicit node(COOR_TYPE left, COOR_TYPE top, COOR_TYPE right, COOR_TYPE bottom) {
 			x = left;
@@ -91,6 +91,10 @@ namespace tml {
 			result.clear();
 			search(root, x, y, radius, result);
 			return !result.empty();
+		}
+
+		const node_type * getRoot() const {
+			return root;
 		}
 
 	private:

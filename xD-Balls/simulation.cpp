@@ -3,6 +3,7 @@
 #include <sstream>
 
 #include "simulation.hpp"
+#include "Qtree.hpp"
 
 const std::string HELP_MSG(
 	R"(Navigation
@@ -16,6 +17,7 @@ PPM - reset simulation
 Funcionality
 H - print this help
 D - print debug info
+T - render qtree
 P - pause simulation
 R - reset simulation
 G - enable/disable gravity forces
@@ -49,7 +51,7 @@ Simulation::Simulation(const sf::VideoMode vm, const bool full_screen) :
 	attraction_tool(&environment)
 {
 	ball_tool.setBallsMass(1000);
-	ball_tool.setBallsRadius(10);
+	ball_tool.setBallsRadius(2);
 	ball_tool.setBallsBounceFactor(1);
 	ball_tool.setBallsPerDeploy(1000);
 	current_tool = &ball_tool;
@@ -223,6 +225,10 @@ void Simulation::eventLoop(sf::RenderWindow &renderer) {
 				print_debug = false;
 				break;
 
+			case sf::Keyboard::T: // enable / disable rendering qtree
+				draw_qtree = !draw_qtree;
+				break;
+
 			case sf::Keyboard::P: // pause
 				paused = !paused;
 				break;
@@ -290,6 +296,9 @@ void Simulation::render(sf::RenderWindow &renderer) {
 	drawRectangles(renderer, environment.rectangles);
 	drawLines(renderer, environment.lines);
 	current_tool->draw(renderer);
+	if (this->draw_qtree) {
+		drawQtree(renderer, environment.BSpwn.balls);
+	}
 
 	if (this->print_debug) { // print debug info
 		std::ostringstream ss;
@@ -368,7 +377,6 @@ void Simulation::drawLines(sf::RenderWindow &renderer, const std::vector<Line> &
 	}
 }
 
-
 void Simulation::drawText(sf::RenderWindow &renderer, const double x, const double y, const std::string s) {
 	sf::View prev_state;
 	prev_state = renderer.getView();
@@ -385,4 +393,41 @@ void Simulation::drawText(sf::RenderWindow &renderer, const double x, const doub
 	renderer.draw(text);
 
 	renderer.setView(prev_state);
+}
+
+void renderNode(sf::RenderWindow& renderer, const tml::node<double, const Ball*>* node) {
+	sf::RectangleShape rect;
+	rect.setPosition(static_cast<float>(node->x), static_cast<float>(node->y));
+	rect.setSize(sf::Vector2f(static_cast<float>(node->x1 - node->x), static_cast<float>(node->y1 - node->y)));
+	rect.setFillColor(sf::Color(0, 0, 0, 0));
+	rect.setOutlineColor(sf::Color::White);
+	rect.setOutlineThickness(2);
+	renderer.draw(rect);
+}
+
+void renderTree(sf::RenderWindow& renderer, const tml::node<double, const Ball*>* node) {
+	if (node != NULL && !node->leaf) {
+		renderNode(renderer, node);
+		for (int i = 0; i < 4; i++) {
+			renderTree(renderer, node->child[i]);
+		}
+	}
+}
+
+void Simulation::drawQtree(sf::RenderWindow& renderer, const std::vector<Ball>& balls) {
+
+	tml::qtree<double, const Ball*> tree(this->environment.bbox.rect.x, this->environment.bbox.rect.y, this->environment.bbox.rect.x + this->environment.bbox.rect.w, this->environment.bbox.rect.y + this->environment.bbox.rect.h);
+	int fail_cnt = 0;
+
+	int balls_n = balls.size();
+	// build tree
+	for (int i = 0; i < balls_n - 1; i++) {
+		if (!tree.add_node(balls[i].position.x, balls[i].position.y, &balls[i])) {
+			fail_cnt += 1;
+		}
+	}
+
+	const tml::node<double, const Ball*>* root = tree.getRoot();
+
+	renderTree(renderer, root);
 }

@@ -9,18 +9,17 @@
 class Tool
 {
 public:
-	enum ToolType { BALL_TOOL, RECTANGLE_TOOL, LINE_TOOL, ATTRACTION_TOOL
-	};
+	enum ToolType { BALL_TOOL, RECTANGLE_TOOL, LINE_TOOL, ATTRACTION_TOOL };
 
 	const std::string name;
 
-	Tool(Environment *e, const std::string name) : e(e), name(name) {}
+	Tool(Environment* e, const std::string name) : e(e), name(name) {}
 
 	virtual void update(const sf::Event &event, const sf::RenderWindow &renderer) = 0;
 	virtual void draw(sf::RenderWindow &renderer) = 0;
 
 protected:
-	Environment * e;
+	Environment* e;
 	Vector2D start_point;
 	Vector2D end_point;
 	sf::Vector2f worldPos;
