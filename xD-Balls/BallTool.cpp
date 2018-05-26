@@ -1,6 +1,6 @@
 #include "BallTool.hpp"
 
-BallTool::BallTool(World* w) : Tool(w, "BallTool") {
+BallTool::BallTool(World* w) : Tool(w) {
 	template_ball.collided = false;
 	texture.loadFromFile("textures\\arrow.png");
 }
@@ -91,6 +91,14 @@ void BallTool::draw(sf::RenderWindow & renderer) {
 	rect.setPosition(static_cast<float>(start_point.x), static_cast<float>(start_point.y));
 	rect.setRotation(180.0f + atan2f(static_cast<float>((start_point - end_point).y), static_cast<float>((start_point - end_point).x)) * 180.0f / static_cast<float>(M_PI));
 	renderer.draw(rect);
+}
+
+std::string BallTool::getName() {
+	return std::string("BallTool");
+}
+
+std::string BallTool::getStatusAsString() {
+	return std::string();
 }
 
 void BallTool::update(double dt) {}

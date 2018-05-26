@@ -4,6 +4,9 @@
 class BallTool : public Tool
 {
 public:
+	explicit BallTool(World* e);
+	~BallTool();
+
 	void setBallsPerDeploy(const int n) { balls_per_deploy = n; }
 	void setBallsRadius(const double d) { template_ball.r = d; }
 	void setBallsMass(const double d) { template_ball.m = d; }
@@ -13,12 +16,13 @@ public:
 	void setBallsRandomColor(const bool b) { randomColor = b; }
 	void setBallsTexturesNumber(const int n) { textures_n = n; }
 
-	explicit BallTool(World* e);
-	~BallTool();
 
 	virtual void update(double dt) override;
 	virtual void handleEvent(const sf::Event& event, const sf::RenderWindow& renderer) override;
 	virtual void draw(sf::RenderWindow& renderer) override;
+
+	virtual std::string getName() override;
+	virtual std::string getStatusAsString() override;
 
 private:
 	Vector2D additionalVelocity;
@@ -32,4 +36,5 @@ private:
 	bool randomVelocity = true;
 	bool randomColor = true;
 	bool draw_flag = false;
+
 };

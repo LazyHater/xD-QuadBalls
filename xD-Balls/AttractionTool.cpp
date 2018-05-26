@@ -2,8 +2,7 @@
 
 
 
-AttractionTool::AttractionTool(World* w) : Tool(w, "AttractionTool") {
-}
+AttractionTool::AttractionTool(World* w) : Tool(w) {}
 
 
 AttractionTool::~AttractionTool() = default;
@@ -38,6 +37,14 @@ void AttractionTool::draw(sf::RenderWindow & renderer) {
 	circle.setPosition(static_cast<float>(start_point.x - 10.0f), static_cast<float>(start_point.y) - 10.0f);
 	circle.setFillColor(sf::Color::Red);
 	renderer.draw(circle);
+}
+
+std::string AttractionTool::getName() {
+	return std::string("AttractionTool");
+}
+
+std::string AttractionTool::getStatusAsString() {
+	return std::string();
 }
 
 void AttractionTool::update(double dt) {

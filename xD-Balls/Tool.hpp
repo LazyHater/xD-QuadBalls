@@ -11,13 +11,14 @@ class Tool
 public:
 	enum ToolType { BALL_TOOL, RECTANGLE_TOOL, LINE_TOOL, ATTRACTION_TOOL };
 
-	const std::string name;
-
-	Tool(World* w, const std::string name) : w(w), name(name) {}
+	Tool(World* w) : w(w) {}
 
 	virtual void update(double dt) = 0;
 	virtual void handleEvent(const sf::Event &event, const sf::RenderWindow &renderer) = 0;
 	virtual void draw(sf::RenderWindow &renderer) = 0;
+
+	virtual std::string getName() = 0;
+	virtual std::string getStatusAsString() = 0;
 
 protected:
 	World* w;

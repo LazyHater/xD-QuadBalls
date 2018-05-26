@@ -311,7 +311,7 @@ void Simulation::render(sf::RenderWindow &renderer) {
 		ss << "Ball Strategy: " << this->world.getCurrentBallCollissionStrategyName() << "\n";
 		ss << "Gravity Forces: " << (this->world.settings.gravity_forces ? "enabled" : "disabled") << "\n";
 		ss << "Simulation speed: " << this->time.getTimeFactor() << "\n";
-		ss << "Current Tool: " << this->current_tool->name << "\n";
+		ss << "Current Tool: " << this->current_tool->getName() << "\n";
 		ss << "Event loop time: " << this->eventLoop_ms_time.getAverage() << "ms\n";
 		ss << "Update time: " << this->update_ms_time.getAverage() << "ms\n";
 		ss << "Render time: " << this->render_ms_time.getAverage() << "ms\n";

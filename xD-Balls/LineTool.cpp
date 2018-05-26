@@ -1,5 +1,7 @@
 #include "LineTool.hpp"
 
+LineTool::LineTool(World * w) : Tool(w) {}
+
 LineTool::~LineTool() = default;
 
 void LineTool::handleEvent(const sf::Event & event, const sf::RenderWindow & renderer) {
@@ -47,6 +49,14 @@ void LineTool::draw(sf::RenderWindow & renderer) {
 	rect.setRotation(static_cast<float>(line.angle * 180.0f / M_PI));
 	rect.setFillColor(line.color);
 	renderer.draw(rect);
+}
+
+std::string LineTool::getName() {
+	return std::string("LineTool");
+}
+
+std::string LineTool::getStatusAsString() {
+	return std::string();
 }
 
 void LineTool::update(double dt) {}
