@@ -1,6 +1,7 @@
 ﻿#define _USE_MATH_DEFINES
 #include <cmath>
 #include <sstream>
+#include <thread>
 
 #include "simulation.hpp"
 #include "Qtree.hpp"
@@ -50,6 +51,7 @@ Simulation::Simulation(const sf::VideoMode vm, const bool full_screen) :
 	rectangle_tool(&world),
 	line_tool(&world),
 	attraction_tool(&world),
+	debug_tool(&world),
 	current_tool(&ball_tool)
 {
 	ball_tool.setBallsMass(1000);
@@ -115,23 +117,35 @@ void Simulation::mainLoop() {
 		renderer.create(video_mode, "Simulate Window");
 	}
 
-	renderer.setView(view);
+
+	//view.setCenter(0,0); // TODO
+    renderer.setView(view);
+
 	while (renderer.isOpen())
 	{
 		// handle mouse and keyboard events
 		clock.restart();
-		eventLoop(renderer);
-		eventLoop_ms_time.newSample(clock.getElapsedTime().asMilliseconds());
+		[this, clock](sf::RenderWindow& renderer) { 
+			eventLoop(renderer); 
+			eventLoop_ms_time.newSample(clock.getElapsedTime().asMilliseconds()); 
+		} (renderer);
+		//eventLoop(renderer);
+		
 
 		// update world
 		clock.restart();
-		update();
-		update_ms_time.newSample(clock.getElapsedTime().asMilliseconds());
+		//std::thread update_thread([this, &clock]() {
+			update();
+			update_ms_time.newSample(clock.getElapsedTime().asMilliseconds());
+		//});  
 
 		// render graphics
 		clock.restart();
 		render(renderer);
 		render_ms_time.newSample(clock.getElapsedTime().asMilliseconds());
+	
+
+		//update_thread.join();
 
 		// update time
 		time.update();
@@ -261,6 +275,10 @@ void Simulation::eventLoop(sf::RenderWindow &renderer) {
 				this->setTool(Tool::ATTRACTION_TOOL);
 				break;
 
+			case sf::Keyboard::F: // set tool to attraction_tool
+				this->setTool(Tool::DEBUG_TOOL);
+				break;
+
 			case sf::Keyboard::Add: // increase simulation speed
 				this->time.setTimeFactor(this->time.getTimeFactor() + 0.1f);
 				break;
@@ -306,7 +324,7 @@ void Simulation::render(sf::RenderWindow &renderer) {
 
 	if (this->print_debug) { // print debug info
 		std::ostringstream ss;
-		ss << "FPS: " << time.getAvgFps() << "\n";
+		ss << "FPS: " << time.getAvgFps() << " ("<< static_cast<int>(time.getDeltaT() * 1000) << ")ms\n";
 		ss << "Balls N: " << this->world.BSpwn.balls.size() << "\n";
 		ss << "Ball Strategy: " << this->world.getCurrentBallCollissionStrategyName() << "\n";
 		ss << "Gravity Forces: " << (this->world.settings.gravity_forces ? "enabled" : "disabled") << "\n";
@@ -315,6 +333,7 @@ void Simulation::render(sf::RenderWindow &renderer) {
 		ss << "Event loop time: " << this->eventLoop_ms_time.getAverage() << "ms\n";
 		ss << "Update time: " << this->update_ms_time.getAverage() << "ms\n";
 		ss << "Render time: " << this->render_ms_time.getAverage() << "ms\n";
+		ss << "Tool Status: \n" << this->current_tool->getStatusAsString() << "\n";
 		this->renderText(renderer, 10, 10, ss.str());
 	}
 
@@ -340,6 +359,10 @@ void Simulation::setTool(const int id) {
 
 	case Tool::ATTRACTION_TOOL:
 		current_tool = &attraction_tool;
+		break;
+
+	case Tool::DEBUG_TOOL:
+		current_tool = &debug_tool;
 		break;
 	}
 }

@@ -13,6 +13,7 @@
 #include "LineTool.hpp"
 #include "RectangleTool.hpp"
 #include "AttractionTool.hpp"
+#include "DebugTool.hpp"
 
 using namespace std;
 
@@ -42,6 +43,7 @@ private:
 	LineTool line_tool;
 	RectangleTool rectangle_tool;
 	AttractionTool attraction_tool;
+	DebugTool debug_tool;
 
 	bool paused = false;
 	bool quit = false;

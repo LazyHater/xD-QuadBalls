@@ -98,7 +98,7 @@ std::string BallTool::getName() {
 }
 
 std::string BallTool::getStatusAsString() {
-	return std::string();
+	return std::string("xDDD");
 }
 
 void BallTool::update(double dt) {}

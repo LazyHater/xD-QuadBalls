@@ -15,7 +15,7 @@ public:
 private:
 	double force_strenght = 500.0f;
 	bool active = false;
-	bool ppm = true;
+	bool ppm = false;
 
 	// Inherited via Tool
 	virtual std::string getName() override;

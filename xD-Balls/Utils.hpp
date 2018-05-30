@@ -15,6 +15,7 @@ public:
 	static int rand(const int min = 0, const int max = 1);
 
 	static std::string vector2DToString(const Vector2D& v);
+	static std::string vector2DToString3Df(const Vector2D& v);
 	static std::string sfVector2fToString(const sf::Vector2f& v);
 	static bool isVisable(const sf::View& view, const Vector2D& p);
 	static bool isBallVisable(const sf::View& view, const Ball& b);

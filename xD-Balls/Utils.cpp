@@ -26,11 +26,18 @@ std::string Utils::vector2DToString(const Vector2D& v) {
 	return ss.str();
 }
 
+std::string Utils::vector2DToString3Df(const Vector2D& v) {
+	std::stringstream ss;
+	ss << "[" << std::showpoint << v.x / 10.0f << ", 2.0, " << std::showpoint << v.y / 10.0f << "]";
+	return ss.str();
+}
+
 std::string Utils::sfVector2fToString(const sf::Vector2f& v) {
 	std::stringstream ss;
 	ss << "[" << v.x << ", " << v.y << "]";
 	return ss.str();
 }
+
 
 bool Utils::isVisable(const sf::View& view, const Vector2D& p) {
 	double half_w = view.getSize().x / 2.0f;

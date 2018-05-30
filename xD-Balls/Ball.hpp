@@ -15,7 +15,7 @@ public:
 	Ball();
 	~Ball();
 
-	explicit Ball(const Ball  &ball);
+	explicit Ball(const Ball& ball);
 	explicit Ball(double x, double y, sf::Color c = sf::Color::Blue, int texture_id = 0);
 	explicit Ball(Vector2D v, sf::Color c = sf::Color::Blue);
 
